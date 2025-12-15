@@ -17,9 +17,9 @@ class TransactionConfig {
    */
   @Bean
   Datastore<WriteTransaction, Transaction> transactionDatastore(TransactionRepository transactionRepository) {
-    return object -> {
+    return (object, userId) -> {
       TransactionEntity e = transactionRepository.save(
-        new TransactionEntity(null, object.userId(), object.vendor(), object.amount(),
+        new TransactionEntity(null, userId, object.vendor(), object.amount(),
           object.date()));
 
       return new Transaction(e.id(), e.userId(), e.vendor(), e.amount(), e.date());

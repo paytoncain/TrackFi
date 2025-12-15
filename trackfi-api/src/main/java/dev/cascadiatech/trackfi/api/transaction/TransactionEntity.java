@@ -29,7 +29,7 @@ class TransactionEntity implements BaseTransaction {
   /**
    * transaction user id (database foreign key)
    */
-  private Integer userId;
+  private String userId;
 
   /**
    * Transaction vendor name
@@ -52,7 +52,7 @@ class TransactionEntity implements BaseTransaction {
   }
 
   @Override
-  public Integer userId() {
+  public String userId() {
     return userId;
   }
 

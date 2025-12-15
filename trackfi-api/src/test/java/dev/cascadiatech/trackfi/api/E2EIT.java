@@ -40,7 +40,7 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isCreated()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{userId:  1, vendor:  'vendor', amount:  10, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{userId:  'user', vendor:  'vendor', amount:  10, date:  '2020-10-10'}")
     );
   }
 

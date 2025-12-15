@@ -15,7 +15,7 @@ interface BaseTransaction {
   /**
    * User storage id
    */
-  Integer userId();
+  String userId();
 
   /**
    * Vendor name

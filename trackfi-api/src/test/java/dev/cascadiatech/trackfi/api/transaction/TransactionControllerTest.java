@@ -1,5 +1,6 @@
 package dev.cascadiatech.trackfi.api.transaction;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -34,8 +35,8 @@ class TransactionControllerTest {
   @Test
   @WithMockUser
   void create() throws Exception {
-    WriteTransaction writeTransaction = new WriteTransaction(2, "vendor", 1f, LocalDate.parse("2020-10-10"));
-    when(datastore.create(eq(writeTransaction))).thenReturn(new Transaction(1, 2, writeTransaction.vendor(), 10f, writeTransaction.date()));
+    WriteTransaction writeTransaction = new WriteTransaction("vendor", 1f, LocalDate.parse("2020-10-10"));
+    when(datastore.create(eq(writeTransaction), anyString())).thenReturn(new Transaction(1, "2", writeTransaction.vendor(), 10f, writeTransaction.date()));
 
     mockMvc.perform(
       post("/api/v1/transactions")
@@ -44,7 +45,7 @@ class TransactionControllerTest {
     ).andExpect(
       MockMvcResultMatchers.status().is(CREATED.value())
     ).andExpect(
-      MockMvcResultMatchers.content().json("{id:  1, userId:  2, vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{id:  1, userId:  '2', vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
     );
   }
 
@@ -61,7 +62,7 @@ class TransactionControllerTest {
     ).andExpect(
       MockMvcResultMatchers.status().isUnprocessableEntity()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{fieldErrors:  {userId:  ['must not be null'], vendor:  ['must not be blank'], amount:  ['must not be null'], date:  ['must be a past date']}}")
+      MockMvcResultMatchers.content().json("{fieldErrors:  {vendor:  ['must not be blank'], amount:  ['must not be null'], date:  ['must be a past date']}}")
     );
 
     mockMvc.perform(
@@ -73,7 +74,7 @@ class TransactionControllerTest {
     ).andExpect(
       MockMvcResultMatchers.status().isUnprocessableEntity()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{fieldErrors:  {userId:  ['must not be null'], vendor:  ['must not be blank'], amount:  ['must not be null'], date:  ['must not be null']}}")
+      MockMvcResultMatchers.content().json("{fieldErrors:  {vendor:  ['must not be blank'], amount:  ['must not be null'], date:  ['must not be null']}}")
     );
   }
 

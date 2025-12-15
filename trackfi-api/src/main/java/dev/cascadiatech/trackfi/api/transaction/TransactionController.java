@@ -2,14 +2,13 @@ package dev.cascadiatech.trackfi.api.transaction;
 
 import dev.cascadiatech.trackfi.api.core.Datastore;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,12 +38,13 @@ class TransactionController {
   /**
    * Creates a new {@link Transaction}
    * @param writeTransaction valid {@link WriteTransaction} which will be created by {@link TransactionController#datastore}
+   * @param authentication {@link Authentication} containing principal for indicating user object ownership
    * @return {@link Transaction} representing created transaction
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public Transaction create(@Valid @RequestBody WriteTransaction writeTransaction) {
-    return datastore.create(writeTransaction);
+  public Transaction create(@Valid @RequestBody WriteTransaction writeTransaction, Authentication authentication) {
+    return datastore.create(writeTransaction, getUserId(authentication));
   }
 
   /**
@@ -65,5 +65,15 @@ class TransactionController {
           )
         ))
     );
+  }
+
+  /**
+   * Return user's unique identifier from spring security context
+   * @param authentication {@link Authentication} containing unique user identifier
+   * @return unique user identifier
+   */
+  private String getUserId(Authentication authentication) {
+    User user = (User) authentication.getPrincipal();
+    return user.getUsername();
   }
 }

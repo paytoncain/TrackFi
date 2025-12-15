@@ -7,11 +7,10 @@ import java.time.LocalDate;
 
 /**
  * View for writing transactions
- * @param userId transaction user id
  * @param vendor transaction vendor name
  * @param amount transaction amount
  * @param date transaction date
  */
-record WriteTransaction(@NotNull Integer userId, @NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
+record WriteTransaction(@NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
 
 }

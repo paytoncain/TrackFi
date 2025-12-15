@@ -12,6 +12,6 @@ public interface Datastore<W, O> {
    * @param object input object
    * @return saved object
    */
-  O create(W object);
+  O create(W object, String userId);
 
 }
