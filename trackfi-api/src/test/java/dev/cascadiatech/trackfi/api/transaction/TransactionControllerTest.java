@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -75,6 +76,16 @@ class TransactionControllerTest {
       MockMvcResultMatchers.status().isUnprocessableEntity()
     ).andExpect(
       MockMvcResultMatchers.content().json("{fieldErrors:  {vendor:  ['must not be blank'], amount:  ['must not be null'], date:  ['must not be null']}}")
+    );
+  }
+
+  @Test
+  @WithAnonymousUser
+  void createNoAuth() throws Exception {
+    mockMvc.perform(
+      post("/api/v1/transactions")
+    ).andExpect(
+      MockMvcResultMatchers.status().isForbidden()
     );
   }
 
