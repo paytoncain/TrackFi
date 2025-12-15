@@ -1,0 +1,3 @@
+[![CodeQL](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql)
+[![Dependabot](https://github.com/paytoncain/TrackFi/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/dependabot/dependabot-updates)
+[![Java CI with Maven](https://github.com/paytoncain/TrackFi/actions/workflows/maven.yml/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/maven.yml)
