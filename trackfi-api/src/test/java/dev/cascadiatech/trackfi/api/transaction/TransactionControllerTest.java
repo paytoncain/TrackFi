@@ -12,12 +12,15 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(TransactionController.class)
+@ComponentScan("dev.cascadiatech.trackfi.api.config")
 class TransactionControllerTest {
 
   @MockitoBean
@@ -29,6 +32,7 @@ class TransactionControllerTest {
   private ObjectMapper objectMapper;
 
   @Test
+  @WithMockUser
   void create() throws Exception {
     WriteTransaction writeTransaction = new WriteTransaction(2, "vendor", 1f, LocalDate.parse("2020-10-10"));
     when(datastore.create(eq(writeTransaction))).thenReturn(new Transaction(1, 2, writeTransaction.vendor(), 10f, writeTransaction.date()));
@@ -45,6 +49,7 @@ class TransactionControllerTest {
   }
 
   @Test
+  @WithMockUser
   void createBadObject() throws Exception {
     mockMvc.perform(
       post("/api/v1/transactions")

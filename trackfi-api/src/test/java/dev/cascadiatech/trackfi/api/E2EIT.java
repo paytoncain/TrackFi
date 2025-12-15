@@ -1,42 +1,47 @@
 package dev.cascadiatech.trackfi.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.time.LocalDate;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
  * Tests application workflow and integration of application features
  */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 class EndToEndTest {
 
   @Autowired
-  private TestRestTemplate restTemplate;
+  private MockMvc mockMvc;
 
   /**
    * Tests complete application workflow via REST API
    */
   @Test
-  public void test() {
+  @WithMockUser
+  public void test() throws Exception {
     createTransaction();
   }
 
-  private void createTransaction() {
-    ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(
-      "/api/v1/transactions",
-      Map.of("userId", 1, "vendor", "vendor", "amount", 10, "date", LocalDate.now().minusYears(1)),
-      String.class
+  private void createTransaction() throws Exception {
+    mockMvc.perform(
+      post("/api/v1/transactions")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content("""
+        {"userId": 1, "vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+        """)
+    ).andExpect(
+      MockMvcResultMatchers.status().isCreated()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{userId:  1, vendor:  'vendor', amount:  10, date:  '2020-10-10'}")
     );
-    System.out.println(stringResponseEntity.getBody());
-    assertEquals(HttpStatus.CREATED.value(), stringResponseEntity.getStatusCode().value());
   }
 
 }
