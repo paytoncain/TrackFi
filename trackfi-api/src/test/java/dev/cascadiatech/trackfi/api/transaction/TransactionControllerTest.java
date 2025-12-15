@@ -21,8 +21,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+/**
+ * Tests security features and functionality of {@link TransactionController}
+ */
 @WebMvcTest(TransactionController.class)
 @ComponentScan("dev.cascadiatech.trackfi.api.config")
+final
 class TransactionControllerTest {
 
   @MockitoBean
@@ -33,6 +37,9 @@ class TransactionControllerTest {
   @Autowired
   private ObjectMapper objectMapper;
 
+  /**
+   * Test object serialization, deserialization, and integration with {@link Datastore}
+   */
   @Test
   @WithMockUser
   void create() throws Exception {
@@ -50,6 +57,9 @@ class TransactionControllerTest {
     );
   }
 
+  /**
+   * Test that transaction object validation errors are reported back to the client
+   */
   @Test
   @WithMockUser
   void createBadObject() throws Exception {
@@ -79,6 +89,9 @@ class TransactionControllerTest {
     );
   }
 
+  /**
+   * Test that unauthenticated users cannot use /api/v1/transactions[POST]
+   */
   @Test
   @WithAnonymousUser
   void createNoAuth() throws Exception {
