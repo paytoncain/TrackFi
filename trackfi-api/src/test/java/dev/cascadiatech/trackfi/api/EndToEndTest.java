@@ -1,5 +1,8 @@
 package dev.cascadiatech.trackfi.api;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -25,14 +27,26 @@ class EndToEndTest {
    * Tests complete application workflow via REST API
    */
   @Test
-  @WithMockUser
   public void test() throws Exception {
+    checkHealth();
     createTransaction();
+  }
+
+  private void checkHealth() throws Exception {
+    mockMvc.perform(
+      get("/actuator/health")
+        .with(anonymous())
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{status:  'UP'}")
+    );
   }
 
   private void createTransaction() throws Exception {
     mockMvc.perform(
       post("/api/v1/transactions")
+        .with(user("user"))
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .content("""
         {"userId": 1, "vendor": "vendor", "amount": 10, "date": "2020-10-10"}
