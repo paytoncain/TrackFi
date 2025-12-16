@@ -2,6 +2,7 @@ package dev.cascadiatech.trackfi.api.transaction;
 
 import dev.cascadiatech.trackfi.api.core.Datastore;
 import jakarta.validation.Valid;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,16 @@ class TransactionController {
   @ResponseStatus(HttpStatus.CREATED)
   public Transaction create(@Valid @RequestBody WriteTransaction writeTransaction, Authentication authentication) {
     return datastore.create(writeTransaction, getUserId(authentication));
+  }
+
+  /**
+   * Lists transactions belonging to the currently authenticated user
+   * @param authentication {@link Authentication} containing principal for indicating user object ownership
+   * @return {@link Collection<Transaction>} of transactions belonging to user
+   */
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public Collection<Transaction> list(Authentication authentication) {
+    return datastore.list(getUserId(authentication));
   }
 
   /**

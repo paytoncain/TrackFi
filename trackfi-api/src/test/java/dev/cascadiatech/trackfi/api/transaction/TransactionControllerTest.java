@@ -4,11 +4,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cascadiatech.trackfi.api.core.Datastore;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,4 +104,33 @@ class TransactionControllerTest {
     );
   }
 
+  /**
+   * Test object serialization, deserialization, and integration with {@link Datastore}
+   */
+  @Test
+  @WithMockUser
+  void list() throws Exception {
+    when(datastore.list(anyString())).thenReturn(Collections.singletonList(new Transaction(1, "userId", "vendor", 1f, LocalDate.of(2020, 10, 10))));
+
+    mockMvc.perform(
+      get("/api/v1/transactions")
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("[{id:  1, userId:  'userId', vendor:  'vendor', amount:  1.0, date: '2020-10-10'}]")
+    );
+  }
+
+  /**
+   * Test that unauthenticated users cannot use /api/v1/transactions[GET]
+   */
+  @Test
+  @WithAnonymousUser
+  void listNoAuth() throws Exception {
+    mockMvc.perform(
+      get("/api/v1/transactions")
+    ).andExpect(
+      MockMvcResultMatchers.status().isForbidden()
+    );
+  }
 }

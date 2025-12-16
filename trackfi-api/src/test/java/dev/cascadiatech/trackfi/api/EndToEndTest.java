@@ -30,8 +30,12 @@ class EndToEndTest {
   public void test() throws Exception {
     checkHealth();
     createTransaction();
+    listTransactions();
   }
 
+  /**
+   * query application health status
+   */
   private void checkHealth() throws Exception {
     mockMvc.perform(
       get("/actuator/health")
@@ -43,6 +47,9 @@ class EndToEndTest {
     );
   }
 
+  /**
+   * creates transaction as authenticated user and assert resulting content
+   */
   private void createTransaction() throws Exception {
     mockMvc.perform(
       post("/api/v1/transactions")
@@ -54,7 +61,21 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isCreated()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{userId:  'user', vendor:  'vendor', amount:  10, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{userId:  'user', vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
+    );
+  }
+
+  /**
+   * list transactions belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndTest#createTransaction()})
+   */
+  private void listTransactions() throws Exception {
+    mockMvc.perform(
+      get("/api/v1/transactions")
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("[{userId:  'user', vendor:  'vendor', amount: 10.0, date: '2020-10-10'}]")
     );
   }
 
