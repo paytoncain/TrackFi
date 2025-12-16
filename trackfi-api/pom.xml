@@ -74,4 +74,48 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <layers>
+            <enabled>true</enabled>
+          </layers>
+          <image>
+            <env>
+              <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
+            </env>
+            <buildpacks>
+              <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+              <buildpack>docker.io/paketobuildpacks/health-checker:latest</buildpack>
+            </buildpacks>
+          </image>
+        </configuration>
+        <executions>
+          <execution>
+            <id>build-jar</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <profiles>
+    <profile>
+      <id>embedded</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
 </project>
