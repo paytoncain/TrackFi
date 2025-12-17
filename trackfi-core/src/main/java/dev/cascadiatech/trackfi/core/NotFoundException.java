@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.core;
+package dev.cascadiatech.trackfi.core;
 
 /**
  * Exception to be thrown when resources requested by a user cannot be found

@@ -1,7 +1,7 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
-import dev.cascadiatech.trackfi.api.core.Datastore;
-import dev.cascadiatech.trackfi.api.core.NotFoundException;
+import dev.cascadiatech.trackfi.core.Datastore;
+import dev.cascadiatech.trackfi.core.NotFoundException;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
 import java.time.LocalDate;
 
@@ -10,6 +10,6 @@ import java.time.LocalDate;
  * @param amount transaction amount
  * @param date transaction date
  */
-record Transaction(Integer id, String userId, String vendor, Float amount, LocalDate date) implements BaseTransaction {
+record Transaction(Integer id, String userId, String vendor, Float amount, LocalDate date) {
 
 }

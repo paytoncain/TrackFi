@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
 import java.util.List;
 import java.util.Optional;

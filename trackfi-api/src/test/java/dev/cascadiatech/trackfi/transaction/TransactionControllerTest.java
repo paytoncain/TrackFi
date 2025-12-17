@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cascadiatech.trackfi.api.core.Datastore;
-import dev.cascadiatech.trackfi.api.core.NotFoundException;
+import dev.cascadiatech.trackfi.core.Datastore;
+import dev.cascadiatech.trackfi.core.NotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  * Tests security features and functionality of {@link TransactionController}
  */
 @WebMvcTest(TransactionController.class)
-@ComponentScan("dev.cascadiatech.trackfi.api.config")
+@ComponentScan("dev.cascadiatech.trackfi.config")
 final
 class TransactionControllerTest {
 

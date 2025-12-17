@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.core;
+package dev.cascadiatech.trackfi.core;
 
 import java.util.Collection;
 

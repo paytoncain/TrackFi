@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api;
+package dev.cascadiatech.trackfi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

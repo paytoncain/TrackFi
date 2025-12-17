@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.config;
+package dev.cascadiatech.trackfi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

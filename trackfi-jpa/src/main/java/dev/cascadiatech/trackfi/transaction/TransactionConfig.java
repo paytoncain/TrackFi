@@ -1,7 +1,7 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
-import dev.cascadiatech.trackfi.api.core.Datastore;
-import dev.cascadiatech.trackfi.api.core.NotFoundException;
+import dev.cascadiatech.trackfi.core.Datastore;
+import dev.cascadiatech.trackfi.core.NotFoundException;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
@@ -58,7 +58,7 @@ class TransactionConfig {
       }
 
       private Transaction transactionFromTransactionEntity(TransactionEntity transactionEntity) {
-        return new Transaction(transactionEntity.id(), transactionEntity.userId(), transactionEntity.vendor(), transactionEntity.amount(), transactionEntity.date());
+        return new Transaction(transactionEntity.getId(), transactionEntity.getUserId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate());
       }
     };
   }

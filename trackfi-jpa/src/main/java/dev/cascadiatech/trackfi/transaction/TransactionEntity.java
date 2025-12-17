@@ -1,4 +1,4 @@
-package dev.cascadiatech.trackfi.api.transaction;
+package dev.cascadiatech.trackfi.transaction;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Implementation of {@link BaseTransaction} compatible with JPA
+ * Transaction model compatible with JPA
  */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-class TransactionEntity implements BaseTransaction {
+class TransactionEntity {
 
   /**
    * transaction id (database primary key)
@@ -50,29 +50,4 @@ class TransactionEntity implements BaseTransaction {
    * Transaction deletion status
    */
   private Boolean deleted;
-
-  @Override
-  public Integer id() {
-    return id;
-  }
-
-  @Override
-  public String userId() {
-    return userId;
-  }
-
-  @Override
-  public String vendor() {
-    return vendor;
-  }
-
-  @Override
-  public Float amount() {
-    return amount;
-  }
-
-  @Override
-  public LocalDate date() {
-    return date;
-  }
 }
