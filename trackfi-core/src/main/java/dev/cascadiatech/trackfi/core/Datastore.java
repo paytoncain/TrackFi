@@ -39,6 +39,6 @@ public interface Datastore<ID, W, O> {
    * @param userId unique user identifier
    * @throws NotFoundException if object could not be found
    */
-  void delete(Integer id, String userId) throws NotFoundException;
+  void delete(ID id, String userId) throws NotFoundException;
 
 }

@@ -1,13 +1,10 @@
 package dev.cascadiatech.trackfi.transaction;
 
-import java.util.List;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+import dev.cascadiatech.trackfi.core.BaseRepository;
 
 /**
- * Implementation of {@link JpaRepository} for managing {@link TransactionEntity}
+ * Implementation of {@link BaseRepository} for managing {@link TransactionEntity}
  */
-interface TransactionRepository extends JpaRepository<TransactionEntity, Integer> {
-  List<TransactionEntity> findByUserIdAndDeleted(String userId, Boolean deleted);
-  Optional<TransactionEntity> getByIdAndUserIdAndDeleted(Integer id, String userId, Boolean deleted);
+interface TransactionRepository extends BaseRepository<Integer, TransactionEntity> {
+
 }

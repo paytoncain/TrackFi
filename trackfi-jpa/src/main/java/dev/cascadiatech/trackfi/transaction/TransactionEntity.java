@@ -1,10 +1,8 @@
 package dev.cascadiatech.trackfi.transaction;
 
+import dev.cascadiatech.trackfi.core.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,23 +11,26 @@ import lombok.Setter;
  * Transaction model compatible with JPA
  */
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-class TransactionEntity {
+class TransactionEntity extends BaseEntity<Integer> {
 
   /**
-   * transaction id (database primary key)
+   * Creates {@link TransactionEntity}
+   * @param integer transaction id
+   * @param userId transaction user id
+   * @param deleted transaction deletion status
+   * @param vendor transaction vendor name
+   * @param amount transaction amount
+   * @param date transaction date
    */
-  @Id
-  @GeneratedValue
-  private Integer id;
-
-  /**
-   * transaction user id (database foreign key)
-   */
-  private String userId;
+  TransactionEntity(Integer integer, String userId, Boolean deleted, String vendor, Float amount, LocalDate date) {
+    super(integer, userId, deleted);
+    this.vendor = vendor;
+    this.amount = amount;
+    this.date = date;
+  }
 
   /**
    * Transaction vendor name
@@ -46,8 +47,4 @@ class TransactionEntity {
    */
   private LocalDate date;
 
-  /**
-   * Transaction deletion status
-   */
-  private Boolean deleted;
 }
