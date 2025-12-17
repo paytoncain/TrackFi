@@ -50,7 +50,7 @@ class TransactionControllerTest {
   @WithMockUser
   void create() throws Exception {
     WriteTransaction writeTransaction = new WriteTransaction("vendor", 1f, LocalDate.parse("2020-10-10"));
-    when(datastore.create(eq(writeTransaction), anyString())).thenReturn(new Transaction(1, "2", writeTransaction.vendor(), 10f, writeTransaction.date()));
+    when(datastore.create(eq(writeTransaction), anyString())).thenReturn(new Transaction(1, writeTransaction.vendor(), 10f, writeTransaction.date()));
 
     mockMvc.perform(
       post("/api/v1/transactions")
@@ -59,7 +59,7 @@ class TransactionControllerTest {
     ).andExpect(
       MockMvcResultMatchers.status().is(CREATED.value())
     ).andExpect(
-      MockMvcResultMatchers.content().json("{id:  1, userId:  '2', vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{id:  1, vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
     );
   }
 
@@ -114,14 +114,14 @@ class TransactionControllerTest {
   @Test
   @WithMockUser
   void list() throws Exception {
-    when(datastore.list(anyString())).thenReturn(Collections.singletonList(new Transaction(1, "userId", "vendor", 1f, LocalDate.of(2020, 10, 10))));
+    when(datastore.list(anyString())).thenReturn(Collections.singletonList(new Transaction(1, "vendor", 1f, LocalDate.of(2020, 10, 10))));
 
     mockMvc.perform(
       get("/api/v1/transactions")
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("[{id:  1, userId:  'userId', vendor:  'vendor', amount:  1.0, date: '2020-10-10'}]")
+      MockMvcResultMatchers.content().json("[{id:  1, vendor:  'vendor', amount:  1.0, date: '2020-10-10'}]")
     );
   }
 
@@ -144,14 +144,14 @@ class TransactionControllerTest {
   @Test
   @WithMockUser
   void getTransaction() throws Exception {
-    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "userId", "vendor", 10f, LocalDate.parse("2020-10-10")));
+    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "vendor", 10f, LocalDate.parse("2020-10-10")));
 
     mockMvc.perform(
       get("/api/v1/transactions/1")
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{id:  1, userId:  'userId', vendor:  'vendor', amount:  10.0, date: '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{id:  1, vendor:  'vendor', amount:  10.0, date: '2020-10-10'}")
     );
   }
 
@@ -191,7 +191,7 @@ class TransactionControllerTest {
   @Test
   @WithMockUser
   void deleteTransaction() throws Exception {
-    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "userId", "vendor", 10f, LocalDate.parse("2020-10-10")));
+    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "vendor", 10f, LocalDate.parse("2020-10-10")));
 
     mockMvc.perform(
       delete("/api/v1/transactions/1")

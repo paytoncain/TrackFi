@@ -58,7 +58,7 @@ class TransactionConfig {
       }
 
       private Transaction transactionFromTransactionEntity(TransactionEntity transactionEntity) {
-        return new Transaction(transactionEntity.getId(), transactionEntity.getUserId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate());
+        return new Transaction(transactionEntity.getId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate());
       }
     };
   }

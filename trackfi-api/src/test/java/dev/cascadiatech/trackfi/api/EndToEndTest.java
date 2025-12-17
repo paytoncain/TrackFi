@@ -69,7 +69,7 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isCreated()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{userId:  'user', vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json("{vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
     ).andReturn()
     .getResponse()
     .getContentAsString();
