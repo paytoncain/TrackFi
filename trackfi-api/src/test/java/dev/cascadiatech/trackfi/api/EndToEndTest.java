@@ -36,11 +36,79 @@ class EndToEndTest {
   @Test
   public void test() throws Exception {
     checkHealth();
-    String transaction = createTransaction("{\"vendor\": \"vendor\", \"amount\": 10, \"date\": \"2020-10-10\"}");
+    String transaction = createTransaction("""
+      {"vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+      """);
     listTransactions(transaction);
     getTransaction(transaction);
     deleteTransaction(transaction);
     listTransactions("");
+
+    String category = createCategory("""
+      {"name": "category"}
+      """);
+    listCategories(category);
+    getCategory(category);
+    deleteCategory(category);
+    listCategories("");
+  }
+
+  /**
+   * Delete category belonging to currently authenticated user (should be deleting output from {@link EndToEndTest#createCategory(String)}
+   */
+  private void deleteCategory(String category) throws Exception {
+    mockMvc.perform(
+      delete("/api/v1/categories/%d".formatted(getIdFromObjectString(category)))
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isNoContent()
+    );
+  }
+
+  /**
+   * Get category belonging to currently authenticated user and assert output (should be the same as output from {@link EndToEndTest#createCategory(String)}
+   */
+  private void getCategory(String category) throws Exception {
+    mockMvc.perform(
+      get("/api/v1/categories/%d".formatted(getIdFromObjectString(category)))
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json(category)
+    );
+  }
+
+  /**
+   * list categories belonging to currently authenticated user and assert output
+   */
+  private void listCategories(String category) throws Exception {
+    mockMvc.perform(
+      get("/api/v1/categories")
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("[%s]".formatted(category))
+    );
+  }
+
+  /**
+   * creates category as authenticated user and asserts output
+   */
+  private String createCategory(String category) throws Exception {
+    return mockMvc.perform(
+      post("/api/v1/categories")
+        .with(user("user"))
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(category)
+    ).andExpect(
+      MockMvcResultMatchers.status().isCreated()
+    ).andExpect(
+      MockMvcResultMatchers.content().json(category)
+    ).andReturn()
+    .getResponse()
+    .getContentAsString();
   }
 
   /**
@@ -69,14 +137,14 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isCreated()
     ).andExpect(
-      MockMvcResultMatchers.content().json("{vendor:  'vendor', amount:  10.0, date:  '2020-10-10'}")
+      MockMvcResultMatchers.content().json(transaction)
     ).andReturn()
     .getResponse()
     .getContentAsString();
   }
 
   /**
-   * list transactions belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndTest#createTransaction(String)})
+   * list transactions belonging to authenticated user
    */
   private void listTransactions(String expectedTransaction) throws Exception {
     mockMvc.perform(
@@ -94,7 +162,7 @@ class EndToEndTest {
    */
   private void getTransaction(String expectedTransaction) throws Exception {
     mockMvc.perform(
-      get("/api/v1/transactions/%s".formatted(getIdFromTransactionString(expectedTransaction)))
+      get("/api/v1/transactions/%s".formatted(getIdFromObjectString(expectedTransaction)))
         .with(user("user"))
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
@@ -108,15 +176,21 @@ class EndToEndTest {
    */
   private void deleteTransaction(String transaction) throws Exception {
     mockMvc.perform(
-      delete("/api/v1/transactions/%d".formatted(getIdFromTransactionString(transaction)))
+      delete("/api/v1/transactions/%d".formatted(getIdFromObjectString(transaction)))
         .with(user("user"))
     ).andExpect(
       MockMvcResultMatchers.status().isNoContent()
     );
   }
 
-  private Integer getIdFromTransactionString(String transaction) throws JsonProcessingException {
-    JsonNode jsonNode = objectMapper.readTree(transaction);
+  /**
+   * Gets id as an integer from an input JSON blob
+   * @param object string containing managed application data type
+   * @return object id
+   * @throws JsonProcessingException if input string contains invalid JSON
+   */
+  private Integer getIdFromObjectString(String object) throws JsonProcessingException {
+    JsonNode jsonNode = objectMapper.readTree(object);
     return jsonNode.get("id").asInt();
   }
 
