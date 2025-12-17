@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.api.transaction;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 interface TransactionRepository extends JpaRepository<TransactionEntity, Integer> {
   List<TransactionEntity> findByUserId(String userId);
+  Optional<TransactionEntity> getByIdAndUserId(Integer id, String userId);
 }

@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.api.transaction;
 
 import dev.cascadiatech.trackfi.api.core.Datastore;
+import dev.cascadiatech.trackfi.api.core.NotFoundException;
 import java.util.Collection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ class TransactionConfig {
    * @return {@link Datastore} for managing transactions within application components
    */
   @Bean
-  Datastore<WriteTransaction, Transaction> transactionDatastore(TransactionRepository transactionRepository) {
+  Datastore<Integer, WriteTransaction, Transaction> transactionDatastore(TransactionRepository transactionRepository) {
     return new Datastore<>() {
       @Override
       public Transaction create(WriteTransaction object, String userId) {
@@ -26,6 +27,13 @@ class TransactionConfig {
             object.date()));
 
         return new Transaction(e.id(), e.userId(), e.vendor(), e.amount(), e.date());
+      }
+
+      @Override
+      public Transaction get(Integer id, String userId) throws NotFoundException {
+        return transactionRepository.getByIdAndUserId(id, userId)
+          .map(transactionEntity -> new Transaction(transactionEntity.id(), transactionEntity.userId(), transactionEntity.vendor(), transactionEntity.amount(), transactionEntity.date()))
+          .orElseThrow(() -> new NotFoundException("transaction with id=%d not found".formatted(id)));
       }
 
       @Override

@@ -31,6 +31,7 @@ class EndToEndTest {
     checkHealth();
     createTransaction();
     listTransactions();
+    getTransaction();
   }
 
   /**
@@ -56,7 +57,7 @@ class EndToEndTest {
         .with(user("user"))
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .content("""
-        {"userId": 1, "vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+        {"vendor": "vendor", "amount": 10, "date": "2020-10-10"}
         """)
     ).andExpect(
       MockMvcResultMatchers.status().isCreated()
@@ -76,6 +77,20 @@ class EndToEndTest {
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
       MockMvcResultMatchers.content().json("[{userId:  'user', vendor:  'vendor', amount: 10.0, date: '2020-10-10'}]")
+    );
+  }
+
+  /**
+   * get transaction belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndTest#listTransactions()}
+   */
+  private void getTransaction() throws Exception {
+    mockMvc.perform(
+      get("/api/v1/transactions/1")
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{userId:  'user', vendor:  'vendor', amount: 10.0, date: '2020-10-10'}")
     );
   }
 

@@ -1,5 +1,6 @@
 package dev.cascadiatech.trackfi.api.transaction;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cascadiatech.trackfi.api.core.Datastore;
+import dev.cascadiatech.trackfi.api.core.NotFoundException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
@@ -32,7 +34,7 @@ final
 class TransactionControllerTest {
 
   @MockitoBean
-  private Datastore<WriteTransaction, Transaction> datastore;
+  private Datastore<Integer, WriteTransaction, Transaction> datastore;
 
   @Autowired
   private MockMvc mockMvc;
@@ -129,6 +131,53 @@ class TransactionControllerTest {
   void listNoAuth() throws Exception {
     mockMvc.perform(
       get("/api/v1/transactions")
+    ).andExpect(
+      MockMvcResultMatchers.status().isForbidden()
+    );
+  }
+
+  /**
+   * Test object serialization, deserialization, and integration with {@link Datastore}
+   */
+  @Test
+  @WithMockUser
+  void getTransaction() throws Exception {
+    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "userId", "vendor", 10f, LocalDate.parse("2020-10-10")));
+
+    mockMvc.perform(
+      get("/api/v1/transactions/1")
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{id:  1, userId:  'userId', vendor:  'vendor', amount:  10.0, date: '2020-10-10'}")
+    );
+  }
+
+  /**
+   * Tests that when a resource cannot be found by the datastore, this endpoint returns a 404 status code
+   */
+  @Test
+  @WithMockUser
+  void getNotFound() throws Exception {
+    when(datastore.get(anyInt(), anyString())).thenThrow(new NotFoundException("transaction not found"));
+
+    mockMvc.perform(
+      get("/api/v1/transactions/1")
+    ).andExpect(
+      MockMvcResultMatchers.status().isNotFound()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{requestErrors:  ['transaction not found']}")
+    );
+  }
+
+  /**
+   * Test that unauthenticated users cannot use /api/v1/transactions/{id}[GET]
+   */
+  @Test
+  @WithAnonymousUser
+  void getNoAuth() throws Exception {
+    mockMvc.perform(
+      get("/api/v1/transactions/1")
     ).andExpect(
       MockMvcResultMatchers.status().isForbidden()
     );

@@ -1,8 +1,10 @@
 package dev.cascadiatech.trackfi.api.transaction;
 
 import dev.cascadiatech.trackfi.api.core.Datastore;
+import dev.cascadiatech.trackfi.api.core.NotFoundException;
 import jakarta.validation.Valid;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,6 +16,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/transactions")
 class TransactionController {
 
-  private final Datastore<WriteTransaction, Transaction> datastore;
+  private final Datastore<Integer, WriteTransaction, Transaction> datastore;
 
   /**
    * Creates a {@link TransactionController}
    * @param datastore {@link Datastore} for managing transactions
    */
-  TransactionController(Datastore<WriteTransaction, Transaction> datastore) {
+  TransactionController(Datastore<Integer, WriteTransaction, Transaction> datastore) {
     this.datastore = datastore;
   }
 
@@ -60,13 +63,25 @@ class TransactionController {
   }
 
   /**
+   * Gets a transaction belonging to a user by its id
+   * @param id transaction id
+   * @param authentication {@link Authentication} containing principal for indicating user object ownership
+   * @return {@link Transaction} belonging to user
+   * @throws NotFoundException if transaction cannot be found
+   */
+  @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Transaction get(@PathVariable("id") Integer id, Authentication authentication) throws NotFoundException {
+    return datastore.get(id, getUserId(authentication));
+  }
+
+  /**
    * Handles Jakarta validation errors by returning field validation messages in a response body
    * @param e {@link MethodArgumentNotValidException} typically sourced from Jakarta validation errors
    * @return {@link Map} containing field validation errors
    */
   @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
   @ExceptionHandler(produces = MediaType.APPLICATION_JSON_VALUE)
-  public Map<String, Object> handleError(MethodArgumentNotValidException e) {
+  private Map<String, Object> handleValidationException(MethodArgumentNotValidException e) {
     return Map.of(
       "fieldErrors", e.getFieldErrors().stream()
         .collect(Collectors.groupingBy(
@@ -76,6 +91,19 @@ class TransactionController {
             Collectors.toList()
           )
         ))
+    );
+  }
+
+  /**
+   * Handles {@link NotFoundException}, which should be thrown when a resource requested by a user cannot be found
+   * @param e {@link NotFoundException}
+   * @return {@link Map} containing error message(s)
+   */
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(produces = MediaType.APPLICATION_JSON_VALUE)
+  private Map<String, Object> handleNotFoundException(NotFoundException e) {
+    return Map.of(
+      "requestErrors", Collections.singletonList(e.getMessage())
     );
   }
 
