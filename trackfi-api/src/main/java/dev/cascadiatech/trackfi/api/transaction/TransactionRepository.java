@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Implementation of {@link JpaRepository} for managing {@link TransactionEntity}
  */
 interface TransactionRepository extends JpaRepository<TransactionEntity, Integer> {
-  List<TransactionEntity> findByUserId(String userId);
-  Optional<TransactionEntity> getByIdAndUserId(Integer id, String userId);
+  List<TransactionEntity> findByUserIdAndDeleted(String userId, Boolean deleted);
+  Optional<TransactionEntity> getByIdAndUserIdAndDeleted(Integer id, String userId, Boolean deleted);
 }

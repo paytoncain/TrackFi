@@ -22,6 +22,7 @@ public interface Datastore<ID, W, O> {
    * @param id object id
    * @param userId unique user identifier
    * @return object belonging to user
+   * @throws NotFoundException if object could not be found
    */
   O get(ID id, String userId) throws NotFoundException;
 
@@ -31,5 +32,13 @@ public interface Datastore<ID, W, O> {
    * @return objects belonging to user
    */
   Collection<O> list(String userId);
+
+  /**
+   * Deletes an object belonging to a user
+   * @param id object id
+   * @param userId unique user identifier
+   * @throws NotFoundException if object could not be found
+   */
+  void delete(Integer id, String userId) throws NotFoundException;
 
 }

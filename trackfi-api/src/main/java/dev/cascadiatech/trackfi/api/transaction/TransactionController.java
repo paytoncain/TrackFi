@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,6 +73,18 @@ class TransactionController {
   @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Transaction get(@PathVariable("id") Integer id, Authentication authentication) throws NotFoundException {
     return datastore.get(id, getUserId(authentication));
+  }
+
+  /**
+   * Deletes a transaction belonging to a user
+   * @param id transaction id
+   * @param authentication {@link Authentication} containing principal for indicating user object ownership
+   * @throws NotFoundException if transaction cannot be found
+   */
+  @DeleteMapping(path = "/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable("id") Integer id, Authentication authentication) throws NotFoundException {
+    datastore.delete(id, getUserId(authentication));
   }
 
   /**

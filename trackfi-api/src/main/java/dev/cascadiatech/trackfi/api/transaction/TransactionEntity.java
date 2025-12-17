@@ -46,6 +46,11 @@ class TransactionEntity implements BaseTransaction {
    */
   private LocalDate date;
 
+  /**
+   * Transaction deletion status
+   */
+  private Boolean deleted;
+
   @Override
   public Integer id() {
     return id;

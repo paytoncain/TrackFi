@@ -3,8 +3,10 @@ package dev.cascadiatech.trackfi.api.transaction;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -154,7 +156,7 @@ class TransactionControllerTest {
   }
 
   /**
-   * Tests that when a resource cannot be found by the datastore, this endpoint returns a 404 status code
+   * Tests that when a transaction cannot be found by the datastore, this endpoint returns a 404 status code
    */
   @Test
   @WithMockUser
@@ -178,6 +180,51 @@ class TransactionControllerTest {
   void getNoAuth() throws Exception {
     mockMvc.perform(
       get("/api/v1/transactions/1")
+    ).andExpect(
+      MockMvcResultMatchers.status().isForbidden()
+    );
+  }
+
+  /**
+   * Test integration with datastore and returns no content status code
+   */
+  @Test
+  @WithMockUser
+  void deleteTransaction() throws Exception {
+    when(datastore.get(anyInt(), anyString())).thenReturn(new Transaction(1, "userId", "vendor", 10f, LocalDate.parse("2020-10-10")));
+
+    mockMvc.perform(
+      delete("/api/v1/transactions/1")
+    ).andExpect(
+      MockMvcResultMatchers.status().isNoContent()
+    );
+  }
+
+  /**
+   * Tests that when a transaction cannot be found by the datastore, this endpoint returns a 404 status code
+   */
+  @Test
+  @WithMockUser
+  void deleteNotFound() throws Exception {
+    doThrow(new NotFoundException("not found exception")).when(datastore).delete(anyInt(), anyString());
+
+    mockMvc.perform(
+      delete("/api/v1/transactions/1")
+    ).andExpect(
+      MockMvcResultMatchers.status().isNotFound()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("{requestErrors:  ['not found exception']}")
+    );
+  }
+
+  /**
+   * Test that unauthenticated users cannot use /api/v1/transactions/{id}[DELETE]
+   */
+  @Test
+  @WithAnonymousUser
+  void deleteNoAuth() throws Exception {
+    mockMvc.perform(
+      delete("/api/v1/transactions/1")
     ).andExpect(
       MockMvcResultMatchers.status().isForbidden()
     );
