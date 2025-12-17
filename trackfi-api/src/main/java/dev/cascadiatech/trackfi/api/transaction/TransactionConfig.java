@@ -23,36 +23,42 @@ class TransactionConfig {
     return new Datastore<>() {
       @Override
       public Transaction create(WriteTransaction object, String userId) {
-        TransactionEntity e = transactionRepository.save(
-          new TransactionEntity(null, userId, object.vendor(), object.amount(),
-            object.date(), false));
+        TransactionEntity transactionEntity = transactionRepository.save(new TransactionEntity(null, userId, object.vendor(), object.amount(), object.date(), false));
 
-        return new Transaction(e.id(), e.userId(), e.vendor(), e.amount(), e.date());
+        return transactionFromTransactionEntity(transactionEntity);
       }
 
       @Override
       public Transaction get(Integer id, String userId) throws NotFoundException {
-        return transactionRepository.getByIdAndUserIdAndDeleted(id, userId, false)
-          .map(transactionEntity -> new Transaction(transactionEntity.id(), transactionEntity.userId(), transactionEntity.vendor(), transactionEntity.amount(), transactionEntity.date()))
-          .orElseThrow(() -> new NotFoundException("transaction with id=%d not found".formatted(id)));
+        TransactionEntity transactionEntity = getTransactionEntity(id, userId);
+        return transactionFromTransactionEntity(transactionEntity);
       }
 
       @Override
       public Collection<Transaction> list(String userId) {
         return transactionRepository.findByUserIdAndDeleted(userId, false).stream()
-          .map(transactionEntity -> new Transaction(transactionEntity.id(), transactionEntity.userId(), transactionEntity.vendor(), transactionEntity.amount(), transactionEntity.date()))
+          .map(this::transactionFromTransactionEntity)
           .toList();
       }
 
       @Override
       public void delete(Integer id, String userId) throws NotFoundException {
+        TransactionEntity transactionEntity = getTransactionEntity(id, userId);
+        transactionEntity.setDeleted(true);
+        transactionRepository.save(transactionEntity);
+      }
+
+      private TransactionEntity getTransactionEntity(Integer id, String userId) throws NotFoundException {
         Optional<TransactionEntity> maybeTransaction = transactionRepository.getByIdAndUserIdAndDeleted(id, userId, false);
         if (maybeTransaction.isEmpty()) {
           throw new NotFoundException("transaction with id=%s not found");
         }
-        TransactionEntity transactionEntity = maybeTransaction.get();
-        transactionEntity.setDeleted(true);
-        transactionRepository.save(transactionEntity);
+
+        return maybeTransaction.get();
+      }
+
+      private Transaction transactionFromTransactionEntity(TransactionEntity transactionEntity) {
+        return new Transaction(transactionEntity.id(), transactionEntity.userId(), transactionEntity.vendor(), transactionEntity.amount(), transactionEntity.date());
       }
     };
   }
