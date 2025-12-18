@@ -27,7 +27,7 @@ class TransactionConfig {
       (object, userId) -> new TransactionEntity(null, userId, false, object.categoryId(), object.vendor(), object.amount(), object.date()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {
-          if ("CATEGORY_FK".equals(constraintViolationException.getConstraintName())) {
+          if ("TRANSACTION_CATEGORY_FK".equals(constraintViolationException.getConstraintName())) {
             return new FieldDataIntegrityException("categoryId", "category not found");
           }
         }

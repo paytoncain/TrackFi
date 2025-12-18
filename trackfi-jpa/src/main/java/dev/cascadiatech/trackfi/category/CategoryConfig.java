@@ -14,7 +14,7 @@ class CategoryConfig {
 
   /**
    * Create instance of {@link Datastore} for managing {@link Category}
-   * @param categoryRepository {@link org.springframework.data.jpa.repository.JpaRepository} for managing categories with JPA
+   * @param categoryRepository {@link dev.cascadiatech.trackfi.core.BaseRepository} for managing categories with JPA
    * @return {@link Datastore} for managing categories within application components
    */
   @Bean

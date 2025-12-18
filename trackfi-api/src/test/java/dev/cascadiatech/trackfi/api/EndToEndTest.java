@@ -49,10 +49,76 @@ class EndToEndTest {
     deleteTransaction(transaction);
     listTransactions("");
 
+    String rule = createRule("""
+      {"categoryId": %d, "vendorRegex": "vendorRegex"}
+      """.formatted(getIdFromObjectString(category)));
+    listRules(rule);
+    getRule(rule);
+    deleteRule(rule);
+    listRules("");
+
     listCategories(category);
     getCategory(category);
     deleteCategory(category);
     listCategories("");
+  }
+
+  /**
+   * Delete rule belonging to authenticated user
+   */
+  private void deleteRule(String rule) throws Exception {
+    mockMvc.perform(
+      delete("/api/v1/rules/%d".formatted(getIdFromObjectString(rule)))
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isNoContent()
+    );
+  }
+
+  /**
+   * Get rule belonging to authenticated user by id (should equal output from {@link EndToEndTest#createRule(String)}
+   */
+  private void getRule(String rule) throws Exception {
+    mockMvc.perform(
+      get("/api/v1/rules/%d".formatted(getIdFromObjectString(rule)))
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json(rule)
+    );
+  }
+
+  /**
+   * List rules belonging to authenticated user and assert output
+   */
+  private void listRules(String rule) throws Exception {
+    mockMvc.perform(
+      get("/api/v1/rules")
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isOk()
+    ).andExpect(
+      MockMvcResultMatchers.content().json("[%s]".formatted(rule))
+    );
+  }
+
+  /**
+   * Creates rule as authenticated user and asserts output
+   */
+  private String createRule(String rule) throws Exception {
+    return mockMvc.perform(
+      post("/api/v1/rules")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(rule)
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isCreated()
+    ).andExpect(
+      MockMvcResultMatchers.content().json(rule)
+    ).andReturn()
+    .getResponse()
+    .getContentAsString();
   }
 
   /**
