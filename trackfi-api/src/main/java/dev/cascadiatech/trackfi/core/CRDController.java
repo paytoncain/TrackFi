@@ -46,7 +46,7 @@ public abstract class CRDController<ID, W, T> {
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
-  public T create(@Valid @RequestBody W writeObject, Authentication authentication) {
+  public T create(@Valid @RequestBody W writeObject, Authentication authentication) throws DataIntegrityException {
     return datastore.create(writeObject, getUserId(authentication));
   }
 
@@ -122,6 +122,29 @@ public abstract class CRDController<ID, W, T> {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(produces = MediaType.APPLICATION_JSON_VALUE)
   private Map<String, Object> handleNotFoundException(NotFoundException e) {
+    return Map.of(
+      "requestErrors", Collections.singletonList(e.getMessage())
+    );
+  }
+
+  /**
+   * Handles {@link DataIntegrityException}, which should be thrown from datastore calls when a transaction fails
+   * @param e {@link DataIntegrityException}
+   * @return {@link Map} containing error message(s). If a field name is not included in the input exception,
+   * a generic error message is returned.
+   */
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(produces = MediaType.APPLICATION_JSON_VALUE)
+  private Map<String, Object> handleDataIntegrityViolationException(DataIntegrityException e) {
+    if (e instanceof FieldDataIntegrityException fieldDataIntegrityException) {
+      return Map.of(
+        "fieldErrors", Map.of(
+          fieldDataIntegrityException.getField(),
+          Collections.singletonList(fieldDataIntegrityException.getMessage())
+        )
+      );
+    }
+
     return Map.of(
       "requestErrors", Collections.singletonList(e.getMessage())
     );

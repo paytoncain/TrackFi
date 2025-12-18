@@ -14,8 +14,9 @@ public interface Datastore<ID, W, O> {
    * @param object input object
    * @param userId unique user identifier
    * @return saved object
+   * @throws DataIntegrityException if database transaction fails
    */
-  O create(W object, String userId);
+  O create(W object, String userId) throws DataIntegrityException;
 
   /**
    * Get an object by the object's id and unique user identifier

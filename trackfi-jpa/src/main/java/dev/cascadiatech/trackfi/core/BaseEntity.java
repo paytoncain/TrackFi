@@ -27,7 +27,7 @@ public class BaseEntity<ID> {
   private ID id;
 
   /**
-   * object user id (database foreign key)
+   * object user id
    */
   private String userId;
 

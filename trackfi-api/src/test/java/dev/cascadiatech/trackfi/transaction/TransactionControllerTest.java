@@ -21,12 +21,12 @@ class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransact
 
   @Override
   protected WriteTransaction createWriteView() {
-    return new WriteTransaction("vendor", 10f, LocalDate.parse("2020-10-10"));
+    return new WriteTransaction(2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Override
   protected Transaction createOutputView() {
-    return new Transaction(1, "vendor", 10f, LocalDate.parse("2020-10-10"));
+    return new Transaction(1, 2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Test

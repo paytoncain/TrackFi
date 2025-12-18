@@ -25,12 +25,18 @@ class TransactionEntity extends BaseEntity<Integer> {
    * @param amount transaction amount
    * @param date transaction date
    */
-  TransactionEntity(Integer integer, String userId, Boolean deleted, String vendor, Float amount, LocalDate date) {
+  TransactionEntity(Integer integer, String userId, Boolean deleted, Integer categoryId, String vendor, Float amount, LocalDate date) {
     super(integer, userId, deleted);
+    this.categoryId = categoryId;
     this.vendor = vendor;
     this.amount = amount;
     this.date = date;
   }
+
+  /**
+   * Transaction category id (database foreign key)
+   */
+  private Integer categoryId;
 
   /**
    * Transaction vendor name

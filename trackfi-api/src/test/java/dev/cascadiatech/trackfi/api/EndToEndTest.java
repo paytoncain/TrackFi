@@ -36,17 +36,19 @@ class EndToEndTest {
   @Test
   public void test() throws Exception {
     checkHealth();
-    String transaction = createTransaction("""
-      {"vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+
+    String category = createCategory("""
+      {"name": "category"}
       """);
+
+    String transaction = createTransaction("""
+      {"vendor": "vendor", "categoryId": %d, "amount": 10, "date": "2020-10-10"}
+      """.formatted(getIdFromObjectString(category)));
     listTransactions(transaction);
     getTransaction(transaction);
     deleteTransaction(transaction);
     listTransactions("");
 
-    String category = createCategory("""
-      {"name": "category"}
-      """);
     listCategories(category);
     getCategory(category);
     deleteCategory(category);

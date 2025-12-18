@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Utility methods for creating instances of {@link Datastore} compatible with JPA
@@ -21,7 +22,7 @@ public final class DatastoreFactory {
    * @param <T> view type
    * @param <E> entity type
    */
-  public static <ID, W, T, E extends BaseEntity<ID>> Datastore<ID, W, T> create(BaseRepository<ID, E> repository, Function<E, T> entityTransform, BiFunction<W, String, E> viewTransform) {
+  public static <ID, W, T, E extends BaseEntity<ID>> Datastore<ID, W, T> create(BaseRepository<ID, E> repository, Function<E, T> entityTransform, BiFunction<W, String, E> viewTransform, Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler) {
     return new Datastore<>() {
       /**
        * Create new object
@@ -30,10 +31,16 @@ public final class DatastoreFactory {
        * @return created object
        */
       @Override
-      public T create(W object, String userId) {
+      public T create(W object, String userId) throws DataIntegrityException {
         E entity = viewTransform.apply(object, userId);
         assert entity.getDeleted() == false; // make sure that a user cannot create a hidden entity
-        entity = repository.save(entity);
+
+        try {
+          entity = repository.save(entity);
+        } catch (DataIntegrityViolationException e) {
+          throw exceptionHandler.apply(e);
+        }
+
         return entityTransform.apply(entity);
       }
 

@@ -1,0 +1,1 @@
+alter table transaction_entity add constraint _category_fk foreign key (category_id) references category_entity(id);

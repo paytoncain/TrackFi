@@ -2,6 +2,9 @@ package dev.cascadiatech.trackfi.transaction;
 
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
+import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
+import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,8 +23,16 @@ class TransactionConfig {
   Datastore<Integer, WriteTransaction, Transaction> transactionDatastore(TransactionRepository transactionRepository) {
     return DatastoreFactory.create(
       transactionRepository,
-      transactionEntity -> new Transaction(transactionEntity.getId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
-      (object, userId) -> new TransactionEntity(null, userId, false, object.vendor(), object.amount(), object.date())
+      transactionEntity -> new Transaction(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
+      (object, userId) -> new TransactionEntity(null, userId, false, object.categoryId(), object.vendor(), object.amount(), object.date()),
+      violation -> {
+        if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {
+          if ("CATEGORY_FK".equals(constraintViolationException.getConstraintName())) {
+            return new FieldDataIntegrityException("categoryId", "category not found");
+          }
+        }
+        return new UnknownDataIntegrityException();
+      }
     );
   }
 

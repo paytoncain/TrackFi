@@ -2,9 +2,7 @@ package dev.cascadiatech.trackfi.category;
 
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
-import dev.cascadiatech.trackfi.core.NotFoundException;
-import java.util.Collection;
-import java.util.Optional;
+import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,7 +22,8 @@ class CategoryConfig {
     return DatastoreFactory.create(
       categoryRepository,
       categoryEntity -> new Category(categoryEntity.getId(), categoryEntity.getName()),
-      (writeCategory, userId) -> new CategoryEntity(null, userId, false, writeCategory.name())
+      (writeCategory, userId) -> new CategoryEntity(null, userId, false, writeCategory.name()),
+      violation -> new UnknownDataIntegrityException()
     );
   }
 

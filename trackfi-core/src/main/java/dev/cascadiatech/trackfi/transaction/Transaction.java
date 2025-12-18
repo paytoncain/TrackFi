@@ -5,10 +5,11 @@ import java.time.LocalDate;
 /**
  * View for reading existing transactions
  * @param id transaction id
+ * @param categoryId transaction category id (nullable)
  * @param vendor transaction vendor name
  * @param amount transaction amount
  * @param date transaction date
  */
-record Transaction(Integer id, String vendor, Float amount, LocalDate date) {
+record Transaction(Integer id, Integer categoryId, String vendor, Float amount, LocalDate date) {
 
 }
