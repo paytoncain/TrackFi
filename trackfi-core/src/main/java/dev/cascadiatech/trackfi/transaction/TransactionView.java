@@ -10,6 +10,6 @@ import java.time.LocalDate;
  * @param amount transaction amount
  * @param date transaction date
  */
-record Transaction(Integer id, Integer categoryId, String vendor, Float amount, LocalDate date) {
+record TransactionView(Integer id, Integer categoryId, String vendor, Float amount, LocalDate date) {
 
 }

@@ -13,15 +13,15 @@ import org.springframework.context.annotation.Configuration;
 class CategoryConfig {
 
   /**
-   * Create instance of {@link Datastore} for managing {@link Category}
+   * Create instance of {@link Datastore} for managing {@link CategoryView}
    * @param categoryRepository {@link dev.cascadiatech.trackfi.core.BaseRepository} for managing categories with JPA
    * @return {@link Datastore} for managing categories within application components
    */
   @Bean
-  Datastore<Integer, WriteCategory, Category> categoryDatastore(CategoryRepository categoryRepository) {
+  Datastore<Integer, WriteCategoryView, CategoryView> categoryDatastore(CategoryRepository categoryRepository) {
     return DatastoreFactory.create(
       categoryRepository,
-      categoryEntity -> new Category(categoryEntity.getId(), categoryEntity.getName()),
+      categoryEntity -> new CategoryView(categoryEntity.getId(), categoryEntity.getName()),
       (writeCategory, userId) -> new CategoryEntity(null, userId, false, writeCategory.name()),
       violation -> new UnknownDataIntegrityException()
     );

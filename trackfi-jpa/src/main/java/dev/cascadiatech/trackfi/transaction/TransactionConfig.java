@@ -15,15 +15,15 @@ import org.springframework.context.annotation.Configuration;
 class TransactionConfig {
 
   /**
-   * Create instance of {@link Datastore} for managing {@link Transaction}
+   * Create instance of {@link Datastore} for managing {@link TransactionView}
    * @param transactionRepository {@link org.springframework.data.jpa.repository.JpaRepository} for managing transactions with JPA
    * @return {@link Datastore} for managing transactions within application components
    */
   @Bean
-  Datastore<Integer, WriteTransaction, Transaction> transactionDatastore(TransactionRepository transactionRepository) {
+  Datastore<Integer, WriteTransactionView, TransactionView> transactionDatastore(TransactionRepository transactionRepository) {
     return DatastoreFactory.create(
       transactionRepository,
-      transactionEntity -> new Transaction(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
+      transactionEntity -> new TransactionView(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
       (object, userId) -> new TransactionEntity(null, userId, false, object.categoryId(), object.vendor(), object.amount(), object.date()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {

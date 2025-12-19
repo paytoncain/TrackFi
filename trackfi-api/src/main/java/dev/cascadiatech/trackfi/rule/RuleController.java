@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/rules")
-class RuleController extends CRDController<Integer, WriteRule, Rule> {
+class RuleController extends CRDController<Integer, WriteRuleView, RuleView> {
 
   /**
    * Creates a {@link RuleController}
@@ -18,7 +18,7 @@ class RuleController extends CRDController<Integer, WriteRule, Rule> {
    * @param datastore {@link Datastore} for managing rules
    */
   protected RuleController(
-    Datastore<Integer, WriteRule, Rule> datastore) {
+    Datastore<Integer, WriteRuleView, RuleView> datastore) {
     super(datastore);
   }
 }

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/categories")
-class CategoryController extends CRDController<Integer, WriteCategory, Category> {
+class CategoryController extends CRDController<Integer, WriteCategoryView, CategoryView> {
 
   /**
    * Creates a {@link CategoryController}
    * @param datastore {@link Datastore} for managing categories
    */
-  protected CategoryController(Datastore<Integer, WriteCategory, Category> datastore) {
+  protected CategoryController(Datastore<Integer, WriteCategoryView, CategoryView> datastore) {
     super(datastore);
   }
 

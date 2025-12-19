@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  */
 @WebMvcTest(TransactionController.class)
 final
-class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransaction, Transaction> {
+class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransactionView, TransactionView> {
 
   @Override
   protected String endpoint() {
@@ -20,13 +20,13 @@ class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransact
   }
 
   @Override
-  protected WriteTransaction createWriteView() {
-    return new WriteTransaction(2, "vendor", 10f, LocalDate.parse("2020-10-10"));
+  protected WriteTransactionView createWriteView() {
+    return new WriteTransactionView(2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Override
-  protected Transaction createOutputView() {
-    return new Transaction(1, 2, "vendor", 10f, LocalDate.parse("2020-10-10"));
+  protected TransactionView createOutputView() {
+    return new TransactionView(1, 2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Test

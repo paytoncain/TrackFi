@@ -10,7 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link CategoryController}
  */
 @WebMvcTest({CategoryController.class})
-class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategory, Category> {
+class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategoryView, CategoryView> {
 
   @Override
   protected String endpoint() {
@@ -18,13 +18,13 @@ class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategory, C
   }
 
   @Override
-  protected WriteCategory createWriteView() {
-    return new WriteCategory("name");
+  protected WriteCategoryView createWriteView() {
+    return new WriteCategoryView("name");
   }
 
   @Override
-  protected Category createOutputView() {
-    return new Category(1, "name");
+  protected CategoryView createOutputView() {
+    return new CategoryView(1, "name");
   }
 
   @Test

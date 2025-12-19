@@ -10,7 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link RuleController}
  */
 @WebMvcTest(RuleController.class)
-class RuleControllerTest extends CRDControllerTest<Integer, WriteRule, Rule> {
+class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleView> {
 
   @Override
   protected String endpoint() {
@@ -18,13 +18,13 @@ class RuleControllerTest extends CRDControllerTest<Integer, WriteRule, Rule> {
   }
 
   @Override
-  protected WriteRule createWriteView() {
-    return new WriteRule(1, "vendorRegex");
+  protected WriteRuleView createWriteView() {
+    return new WriteRuleView(1, "vendorRegex");
   }
 
   @Override
-  protected Rule createOutputView() {
-    return new Rule(1, 2, "vendorRegex");
+  protected RuleView createOutputView() {
+    return new RuleView(1, 2, "vendorRegex");
   }
 
   @Test

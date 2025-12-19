@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/transactions")
-class TransactionController extends CRDController<Integer, WriteTransaction, Transaction> {
+class TransactionController extends CRDController<Integer, WriteTransactionView, TransactionView> {
 
     /**
      * Creates a {@link TransactionController}
      * @param datastore {@link Datastore} for managing transactions
      */
-  protected TransactionController(Datastore<Integer, WriteTransaction, Transaction> datastore) {
+  protected TransactionController(Datastore<Integer, WriteTransactionView, TransactionView> datastore) {
     super(datastore);
   }
 

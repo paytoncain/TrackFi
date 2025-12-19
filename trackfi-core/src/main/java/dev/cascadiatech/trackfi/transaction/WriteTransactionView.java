@@ -12,6 +12,6 @@ import java.time.LocalDate;
  * @param amount transaction amount
  * @param date transaction date
  */
-record WriteTransaction(Integer categoryId, @NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
+record WriteTransactionView(Integer categoryId, @NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
 
 }

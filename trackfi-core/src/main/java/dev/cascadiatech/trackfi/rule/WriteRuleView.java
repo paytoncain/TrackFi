@@ -8,6 +8,6 @@ import jakarta.validation.constraints.NotNull;
  * @param categoryId rule category id
  * @param vendorRegex regular expression matching transaction vendors
  */
-record WriteRule(@NotNull Integer categoryId, @NotBlank String vendorRegex) {
+record WriteRuleView(@NotNull Integer categoryId, @NotBlank String vendorRegex) {
 
 }

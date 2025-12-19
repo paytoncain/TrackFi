@@ -15,15 +15,15 @@ import org.springframework.context.annotation.Configuration;
 class RuleConfig {
 
   /**
-   * Create instance of {@link Datastore} for managing {@link Rule}
+   * Create instance of {@link Datastore} for managing {@link RuleView}
    * @param repository {@link dev.cascadiatech.trackfi.core.BaseRepository} for managing rules with JPA
    * @return {@link Datastore} for managing rules within application components
    */
   @Bean
-  Datastore<Integer, WriteRule, Rule> ruleDatastore(RuleRepository repository) {
+  Datastore<Integer, WriteRuleView, RuleView> ruleDatastore(RuleRepository repository) {
     return DatastoreFactory.create(
       repository,
-      ruleEntity -> new Rule(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendorRegex()),
+      ruleEntity -> new RuleView(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendorRegex()),
       (writeRule, userId) -> new RuleEntity(null, userId, false, writeRule.categoryId(), writeRule.vendorRegex()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {

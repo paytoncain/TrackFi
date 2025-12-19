@@ -6,6 +6,6 @@ package dev.cascadiatech.trackfi.rule;
  * @param categoryId rule category id
  * @param vendorRegex regular expression matching transaction vendors
  */
-record Rule(Integer id, Integer categoryId, String vendorRegex) {
+record RuleView(Integer id, Integer categoryId, String vendorRegex) {
 
 }
