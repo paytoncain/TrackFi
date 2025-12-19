@@ -6,6 +6,7 @@ import java.util.function.Function;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Utility methods for creating instances of {@link Datastore} compatible with JPA
@@ -17,6 +18,7 @@ public final class DatastoreFactory {
    * @param repository {@link BaseRepository} for managing object with JPA
    * @param entityTransform function for creating a view from an entity
    * @param viewTransform function for creating an entity from a write view
+   * @param getSpecifications function for creating an array JPA {@link Specification} from parameters
    * @return instance of {@link Datastore} for managing objects within application components
    * @param <ID> entity id type
    * @param <W> write view type
@@ -24,7 +26,13 @@ public final class DatastoreFactory {
    * @param <E> entity type
    * @param <P> page parameters type, default can be used if search functionality is not being provided
    */
-  public static <ID, W, T, E extends BaseEntity<ID>, P extends PageParameters> Datastore<ID, W, T, P> create(BaseRepository<ID, E> repository, Function<E, T> entityTransform, BiFunction<W, String, E> viewTransform, Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler) {
+  public static <ID, W, T, E extends BaseEntity<ID>, P extends PageParameters> Datastore<ID, W, T, P> create(
+    BaseRepository<ID, E> repository,
+    Function<E, T> entityTransform,
+    BiFunction<W, String, E> viewTransform,
+    Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler,
+    Function<P, Specification<E>> getSpecifications
+  ) {
     return new Datastore<>() {
       /**
        * Create new object
@@ -67,7 +75,16 @@ public final class DatastoreFactory {
        */
       @Override
       public PageView<T> list(P parameters, String userId) {
-        Page<T> page = repository.findAllByUserIdAndDeleted(userId, false,
+        Specification<E> specification = Specification.<E>unrestricted()
+          .and(getSpecifications.apply(parameters))
+          .and((root, query, criteriaBuilder) -> criteriaBuilder.and(
+            criteriaBuilder.equal(root.get("userId"), userId),
+            criteriaBuilder.equal(root.get("deleted"), false)
+          )
+        );
+
+        Page<T> page = repository.findAll(
+            specification,
             PageRequest.of(parameters.getPage() - 1, parameters.getItemPerPage()))
           .map(entityTransform);
 

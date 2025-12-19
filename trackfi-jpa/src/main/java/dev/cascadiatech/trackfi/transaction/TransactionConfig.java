@@ -3,11 +3,11 @@ package dev.cascadiatech.trackfi.transaction;
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
 import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
-import dev.cascadiatech.trackfi.core.PageParameters;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Beans supporting transactions functionality
@@ -21,7 +21,7 @@ class TransactionConfig {
    * @return {@link Datastore} for managing transactions within application components
    */
   @Bean
-  Datastore<Integer, WriteTransactionView, TransactionView, PageParameters> transactionDatastore(TransactionRepository transactionRepository) {
+  Datastore<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> transactionDatastore(TransactionRepository transactionRepository) {
     return DatastoreFactory.create(
       transactionRepository,
       transactionEntity -> new TransactionView(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
@@ -33,6 +33,17 @@ class TransactionConfig {
           }
         }
         return new UnknownDataIntegrityException();
+      },
+      (p) -> {
+        Specification<TransactionEntity> specification = Specification.unrestricted();
+
+        String vendorRegex = p.getVendorRegex();
+
+        if (vendorRegex == null || vendorRegex.isEmpty()) {
+          return specification;
+        }
+
+        return specification.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("vendor"), vendorRegex));
       }
     );
   }

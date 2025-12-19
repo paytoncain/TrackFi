@@ -8,6 +8,7 @@ import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Beans supporting rule functionality
@@ -33,7 +34,8 @@ class RuleConfig {
           }
         }
         return new UnknownDataIntegrityException();
-      }
+      },
+      (p) -> Specification.unrestricted()
     );
   }
 
