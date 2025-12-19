@@ -16,19 +16,19 @@ import lombok.experimental.SuperBuilder;
 class TransactionSearchParameters extends PageParameters {
 
   /**
-   * Regular expression filter for 'vendor' field
+   * filter for 'vendor' field
    */
-  private String vendorRegex;
+  private String vendor;
 
   /**
    * Creates a {@link TransactionSearchParameters}
    * @param page requested page
    * @param itemPerPage requested items per page
-   * @param vendorRegex regular expression for filtering by transaction 'vendor'
+   * @param vendor pattern for filtering by transaction 'vendor'
    */
-  public TransactionSearchParameters(Integer page, Integer itemPerPage, String vendorRegex) {
+  public TransactionSearchParameters(Integer page, Integer itemPerPage, String vendor) {
     super(page, itemPerPage);
-    this.vendorRegex = vendorRegex;
+    this.vendor = vendor;
   }
 
 

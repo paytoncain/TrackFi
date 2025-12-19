@@ -25,8 +25,8 @@ class RuleConfig {
   Datastore<Integer, WriteRuleView, RuleView, PageParameters> ruleDatastore(RuleRepository repository) {
     return DatastoreFactory.create(
       repository,
-      ruleEntity -> new RuleView(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendorRegex()),
-      (writeRule, userId) -> new RuleEntity(null, userId, false, writeRule.categoryId(), writeRule.vendorRegex()),
+      ruleEntity -> new RuleView(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendor()),
+      (writeRule, userId) -> new RuleEntity(null, userId, false, writeRule.categoryId(), writeRule.vendor()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {
           if ("RULE_CATEGORY_FK".equals(constraintViolationException.getConstraintName())) {

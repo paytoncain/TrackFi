@@ -20,12 +20,12 @@ class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleV
 
   @Override
   protected WriteRuleView createWriteView() {
-    return new WriteRuleView(1, "vendorRegex");
+    return new WriteRuleView(1, "vendor");
   }
 
   @Override
   protected RuleView createOutputView() {
-    return new RuleView(1, 2, "vendorRegex");
+    return new RuleView(1, 2, "vendor");
   }
 
   @Test
@@ -34,15 +34,15 @@ class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleV
     createBadObject(
       Map.of(),
       """
-        {fieldErrors: {categoryId: ['must not be null'], vendorRegex: ['must not be blank']}}
+        {fieldErrors: {categoryId: ['must not be null'], vendor: ['must not be blank']}}
         """
     );
     createBadObject(
       Map.of(
-        "vendorRegex", ""
+        "vendor", ""
       ),
       """
-        {fieldErrors: {categoryId: ['must not be null'], vendorRegex: ['must not be blank']}}
+        {fieldErrors: {categoryId: ['must not be null'], vendor: ['must not be blank']}}
         """
     );
   }

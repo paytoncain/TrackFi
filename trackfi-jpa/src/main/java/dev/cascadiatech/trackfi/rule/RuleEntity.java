@@ -21,13 +21,13 @@ class RuleEntity extends BaseEntity<Integer> {
    * @param userId rule user id
    * @param deleted rule deletion status
    * @param categoryId rule category id
-   * @param vendorRegex regular expression matching transaction vendors
+   * @param vendor pattern matching transaction vendors
    */
   RuleEntity(Integer id, String userId, Boolean deleted, Integer categoryId,
-    String vendorRegex) {
+    String vendor) {
     super(id, userId, deleted);
     this.categoryId = categoryId;
-    this.vendorRegex = vendorRegex;
+    this.vendor = vendor;
   }
 
   /**
@@ -36,8 +36,8 @@ class RuleEntity extends BaseEntity<Integer> {
   private Integer categoryId;
 
   /**
-   * regular expression matching transaction vendors
+   * pattern matching transaction vendors
    */
-  private String vendorRegex;
+  private String vendor;
 
 }

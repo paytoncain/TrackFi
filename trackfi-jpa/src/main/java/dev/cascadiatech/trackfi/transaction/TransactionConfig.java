@@ -37,13 +37,13 @@ class TransactionConfig {
       (p) -> {
         Specification<TransactionEntity> specification = Specification.unrestricted();
 
-        String vendorRegex = p.getVendorRegex();
+        String vendor = p.getVendor();
 
-        if (vendorRegex == null || vendorRegex.isEmpty()) {
+        if (vendor == null || vendor.isEmpty()) {
           return specification;
         }
 
-        return specification.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("vendor"), vendorRegex));
+        return specification.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("vendor"), vendor));
       }
     );
   }

@@ -50,7 +50,7 @@ class EndToEndTest {
     listTransactions("");
 
     String rule = createRule("""
-      {"categoryId": %d, "vendorRegex": "vendorRegex"}
+      {"categoryId": %d, "vendor": "vendor"}
       """.formatted(getIdFromObjectString(category)));
     listRules(rule);
     getRule(rule);
