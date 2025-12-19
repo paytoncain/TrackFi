@@ -25,16 +25,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @param <ID> object id type
  * @param <W> write object type
  * @param <T> object type
+ * @param <P> page parameters type (can include search parameters)
  */
-public abstract class CRDController<ID, W, T> {
+public abstract class CRDController<ID, W, T, P extends PageParameters> {
 
-  private final Datastore<ID, W, T> datastore;
+  private final Datastore<ID, W, T, P> datastore;
 
   /**
    * Creates a {@link CRDController}
    * @param datastore {@link Datastore} for managing objects
    */
-  protected CRDController(Datastore<ID, W, T> datastore) {
+  protected CRDController(Datastore<ID, W, T, P> datastore) {
     this.datastore = datastore;
   }
 
@@ -52,12 +53,13 @@ public abstract class CRDController<ID, W, T> {
 
   /**
    * Lists object belonging to the currently authenticated user
+   * @param parameters parameters for paging and filtering results
    * @param authentication {@link Authentication} containing principal for indicating user object ownership
-   * @return objects belonging to user
+   * @return paged objects belonging to user
    */
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<T> list(Authentication authentication) {
-    return datastore.list(getUserId(authentication));
+  public PageView<T> list(@Valid P parameters, Authentication authentication) {
+    return datastore.list(parameters, getUserId(authentication));
   }
 
   /**

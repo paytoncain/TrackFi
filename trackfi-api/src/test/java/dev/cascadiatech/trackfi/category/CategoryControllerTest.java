@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.category;
 
 import dev.cascadiatech.trackfi.core.CRDControllerTest;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,7 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link CategoryController}
  */
 @WebMvcTest({CategoryController.class})
-class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategoryView, CategoryView> {
+class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategoryView, CategoryView, PageParameters> {
 
   @Override
   protected String endpoint() {

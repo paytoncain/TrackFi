@@ -1,10 +1,11 @@
 package dev.cascadiatech.trackfi.core;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 /**
  * Utility methods for creating instances of {@link Datastore} compatible with JPA
@@ -21,8 +22,9 @@ public final class DatastoreFactory {
    * @param <W> write view type
    * @param <T> view type
    * @param <E> entity type
+   * @param <P> page parameters type, default can be used if search functionality is not being provided
    */
-  public static <ID, W, T, E extends BaseEntity<ID>> Datastore<ID, W, T> create(BaseRepository<ID, E> repository, Function<E, T> entityTransform, BiFunction<W, String, E> viewTransform, Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler) {
+  public static <ID, W, T, E extends BaseEntity<ID>, P extends PageParameters> Datastore<ID, W, T, P> create(BaseRepository<ID, E> repository, Function<E, T> entityTransform, BiFunction<W, String, E> viewTransform, Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler) {
     return new Datastore<>() {
       /**
        * Create new object
@@ -58,15 +60,24 @@ public final class DatastoreFactory {
       }
 
       /**
-       * Get objects belonging to user with delete flag = false
+       * Get paginated objects belonging to user with delete flag = false
+       * @param parameters {@link PageParameters} including parameters for filtering results
        * @param userId unique user identifier
        * @return objects belonging to user
        */
       @Override
-      public Collection<T> list(String userId) {
-        return repository.findByUserIdAndDeleted(userId, false).stream() // search across entities that are not deleted
-          .map(entityTransform)
-          .toList();
+      public PageView<T> list(P parameters, String userId) {
+        Page<T> page = repository.findAllByUserIdAndDeleted(userId, false,
+            PageRequest.of(parameters.getPage() - 1, parameters.getItemPerPage()))
+          .map(entityTransform);
+
+        return PageView.<T>builder()
+          .page(page.getNumber() + 1)
+          .itemsPerPage(page.getSize())
+          .items(page.getContent())
+          .totalItems(page.getTotalElements())
+          .totalPages(page.getTotalPages())
+          .build();
       }
 
       /**

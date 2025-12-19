@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.rule;
 
 import dev.cascadiatech.trackfi.core.CRDControllerTest;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,7 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link RuleController}
  */
 @WebMvcTest(RuleController.class)
-class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleView> {
+class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleView, PageParameters> {
 
   @Override
   protected String endpoint() {

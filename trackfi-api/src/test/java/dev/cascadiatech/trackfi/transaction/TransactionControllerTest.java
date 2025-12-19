@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.transaction;
 
 import dev.cascadiatech.trackfi.core.CRDControllerTest;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import java.time.LocalDate;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  */
 @WebMvcTest(TransactionController.class)
 final
-class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransactionView, TransactionView> {
+class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransactionView, TransactionView, PageParameters> {
 
   @Override
   protected String endpoint() {

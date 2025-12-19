@@ -3,6 +3,7 @@ package dev.cascadiatech.trackfi.transaction;
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
 import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ class TransactionConfig {
    * @return {@link Datastore} for managing transactions within application components
    */
   @Bean
-  Datastore<Integer, WriteTransactionView, TransactionView> transactionDatastore(TransactionRepository transactionRepository) {
+  Datastore<Integer, WriteTransactionView, TransactionView, PageParameters> transactionDatastore(TransactionRepository transactionRepository) {
     return DatastoreFactory.create(
       transactionRepository,
       transactionEntity -> new TransactionView(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),

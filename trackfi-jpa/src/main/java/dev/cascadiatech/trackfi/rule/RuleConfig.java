@@ -3,6 +3,7 @@ package dev.cascadiatech.trackfi.rule;
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
 import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ class RuleConfig {
    * @return {@link Datastore} for managing rules within application components
    */
   @Bean
-  Datastore<Integer, WriteRuleView, RuleView> ruleDatastore(RuleRepository repository) {
+  Datastore<Integer, WriteRuleView, RuleView, PageParameters> ruleDatastore(RuleRepository repository) {
     return DatastoreFactory.create(
       repository,
       ruleEntity -> new RuleView(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendorRegex()),

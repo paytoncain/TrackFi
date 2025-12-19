@@ -26,10 +26,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest
 @ComponentScan("dev.cascadiatech.trackfi.config")
-public abstract class CRDControllerTest<ID, W, T> {
+public abstract class CRDControllerTest<ID, W, T, P extends PageParameters> {
 
   @MockitoBean
-  private Datastore<ID, W, T> datastore;
+  private Datastore<ID, W, T, P> datastore;
 
   @Autowired
   private MockMvc mockMvc;
@@ -112,8 +112,14 @@ public abstract class CRDControllerTest<ID, W, T> {
   void list() throws Exception {
     T outputView = createOutputView();
 
-    when(datastore.list(anyString())).thenReturn(
-      Collections.singletonList(outputView)
+    when(datastore.list(any(), anyString())).thenReturn(
+      PageView.<T>builder()
+        .page(1)
+        .itemsPerPage(1)
+        .totalItems(1L)
+        .totalPages(1)
+        .items(Collections.singletonList(outputView))
+        .build()
     );
 
     mockMvc.perform(
@@ -121,7 +127,9 @@ public abstract class CRDControllerTest<ID, W, T> {
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("[%s]".formatted(objectMapper.writeValueAsString(outputView)))
+      MockMvcResultMatchers.content().json("""
+        {"page": 1, "itemsPerPage": 1, "totalPages": 1, "totalItems": 1, "items": [%s]}
+        """.formatted(objectMapper.writeValueAsString(outputView)))
     );
   }
 

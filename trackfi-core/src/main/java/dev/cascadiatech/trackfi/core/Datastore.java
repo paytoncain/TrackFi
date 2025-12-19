@@ -1,13 +1,11 @@
 package dev.cascadiatech.trackfi.core;
 
-import java.util.Collection;
-
 /**
  * Manages object storage
  * @param <W> input class
  * @param <O> output class
  */
-public interface Datastore<ID, W, O> {
+public interface Datastore<ID, W, O, P extends PageParameters> {
 
   /**
    * Creates a new object which does not yet exist in storage
@@ -29,10 +27,11 @@ public interface Datastore<ID, W, O> {
 
   /**
    * Lists objects belonging to user
+   * @param parameters {@link PageParameters} for paging and filtering results
    * @param userId unique user identifier
-   * @return objects belonging to user
+   * @return paged items belonging to user
    */
-  Collection<O> list(String userId);
+  PageView<O> list(P parameters, String userId);
 
   /**
    * Deletes an object belonging to a user

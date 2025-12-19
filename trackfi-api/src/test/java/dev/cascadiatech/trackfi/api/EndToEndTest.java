@@ -99,7 +99,7 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("[%s]".formatted(rule))
+      MockMvcResultMatchers.content().json("{items: [%s]}".formatted(rule))
     );
   }
 
@@ -157,7 +157,7 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("[%s]".formatted(category))
+      MockMvcResultMatchers.content().json("{items: [%s]}".formatted(category))
     );
   }
 
@@ -221,7 +221,7 @@ class EndToEndTest {
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
-      MockMvcResultMatchers.content().json("[%s]".formatted(expectedTransaction))
+      MockMvcResultMatchers.content().json("{items: [%s]}".formatted(expectedTransaction))
     );
   }
 

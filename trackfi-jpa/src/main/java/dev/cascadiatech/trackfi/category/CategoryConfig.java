@@ -2,6 +2,7 @@ package dev.cascadiatech.trackfi.category;
 
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
+import dev.cascadiatech.trackfi.core.PageParameters;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ class CategoryConfig {
    * @return {@link Datastore} for managing categories within application components
    */
   @Bean
-  Datastore<Integer, WriteCategoryView, CategoryView> categoryDatastore(CategoryRepository categoryRepository) {
+  Datastore<Integer, WriteCategoryView, CategoryView, PageParameters> categoryDatastore(CategoryRepository categoryRepository) {
     return DatastoreFactory.create(
       categoryRepository,
       categoryEntity -> new CategoryView(categoryEntity.getId(), categoryEntity.getName()),
