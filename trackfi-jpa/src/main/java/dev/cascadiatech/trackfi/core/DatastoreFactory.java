@@ -80,13 +80,12 @@ public final class DatastoreFactory {
           .and((root, query, criteriaBuilder) -> criteriaBuilder.and(
             criteriaBuilder.equal(root.get("userId"), userId),
             criteriaBuilder.equal(root.get("deleted"), false)
-          )
-        );
+          ));
 
         Page<T> page = repository.findAll(
             specification,
-            PageRequest.of(parameters.getPage() - 1, parameters.getItemPerPage()))
-          .map(entityTransform);
+            PageRequest.of(parameters.getPage() - 1, parameters.getItemPerPage())
+          ).map(entityTransform);
 
         return PageView.<T>builder()
           .page(page.getNumber() + 1)

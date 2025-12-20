@@ -1,9 +1,10 @@
-package dev.cascadiatech.trackfi.api;
+package dev.cascadiatech.trackfi;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,21 +38,32 @@ class EndToEndTest {
   public void test() throws Exception {
     checkHealth();
 
-    String category = createCategory("""
+    String category = createCategory(
+      """
       {"name": "category"}
-      """);
+      """
+    );
+    String rule = createRule(
+      """
+      {"categoryId": %d, "vendor": "vendor"}
+      """.formatted(getIdFromObjectString(category))
+    );
+    String transaction = createTransaction(
+      """
+      {"vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+      """
+    );
+    applyRules();
+    transaction = getTransaction(
+      """
+      {"id": %s, "categoryId": %d, "vendor": "vendor", "amount": 10, "date": "2020-10-10"}
+      """.formatted(getIdFromObjectString(transaction), getIdFromObjectString(category))
+    );
 
-    String transaction = createTransaction("""
-      {"vendor": "vendor", "categoryId": %d, "amount": 10, "date": "2020-10-10"}
-      """.formatted(getIdFromObjectString(category)));
     listTransactions(transaction);
-    getTransaction(transaction);
     deleteTransaction(transaction);
     listTransactions("");
 
-    String rule = createRule("""
-      {"categoryId": %d, "vendor": "vendor"}
-      """.formatted(getIdFromObjectString(category)));
     listRules(rule);
     getRule(rule);
     deleteRule(rule);
@@ -61,6 +73,18 @@ class EndToEndTest {
     getCategory(category);
     deleteCategory(category);
     listCategories("");
+  }
+
+  /**
+   * apply categoryIds to transactions via rules
+   */
+  private void applyRules() throws Exception {
+    mockMvc.perform(
+      patch("/api/v1/transactions/apply-rules")
+        .with(user("user"))
+    ).andExpect(
+      MockMvcResultMatchers.status().isNoContent()
+    );
   }
 
   /**
@@ -228,15 +252,17 @@ class EndToEndTest {
   /**
    * get transaction belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndTest#createTransaction(String)})
    */
-  private void getTransaction(String expectedTransaction) throws Exception {
-    mockMvc.perform(
+  private String getTransaction(String expectedTransaction) throws Exception {
+    return mockMvc.perform(
       get("/api/v1/transactions/%s".formatted(getIdFromObjectString(expectedTransaction)))
         .with(user("user"))
     ).andExpect(
       MockMvcResultMatchers.status().isOk()
     ).andExpect(
       MockMvcResultMatchers.content().json(expectedTransaction)
-    );
+    ).andReturn()
+    .getResponse()
+    .getContentAsString();
   }
 
   /**

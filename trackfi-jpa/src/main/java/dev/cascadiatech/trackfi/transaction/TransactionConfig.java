@@ -3,7 +3,12 @@ package dev.cascadiatech.trackfi.transaction;
 import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
 import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
+import dev.cascadiatech.trackfi.core.PageParameters;
+import dev.cascadiatech.trackfi.core.PageView;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +49,30 @@ class TransactionConfig {
         }
 
         return specification.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("vendor"), vendor));
+      }
+    );
+  }
+
+  /**
+   * Create instance of {@link RuleApplicationService} for applying categoryIds to transactions
+   * @param transactionDatastore {@link Datastore} for managing transactions
+   * @param externalSearchRules function searching for rules by page parameter and user id. returns paginated items, each containing categoryId and rule vendor pattern
+   * @param transactionRepository {@link TransactionRepository} for managing {@link TransactionEntity} with JPA (should only be used for updates)
+   * @return {@link RuleApplicationService} for rule application in application components
+   */
+  @Bean
+  Consumer<String> ruleApplicationService(
+    Datastore<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> transactionDatastore,
+    BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> externalSearchRules,
+    TransactionRepository transactionRepository
+  ) {
+    return new RuleApplicationService(
+      externalSearchRules,
+      transactionDatastore::list,
+      (transactionWithUserId) -> {
+        String userId = transactionWithUserId.getLeft();
+        TransactionView view = transactionWithUserId.getRight();
+        transactionRepository.save(new TransactionEntity(view.id(), userId, false, view.categoryId(), view.vendor(), view.amount(), view.date()));
       }
     );
   }

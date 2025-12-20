@@ -4,7 +4,10 @@ import dev.cascadiatech.trackfi.core.Datastore;
 import dev.cascadiatech.trackfi.core.DatastoreFactory;
 import dev.cascadiatech.trackfi.core.FieldDataIntegrityException;
 import dev.cascadiatech.trackfi.core.PageParameters;
+import dev.cascadiatech.trackfi.core.PageView;
 import dev.cascadiatech.trackfi.core.UnknownDataIntegrityException;
+import java.util.function.BiFunction;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +39,19 @@ class RuleConfig {
         return new UnknownDataIntegrityException();
       },
       (p) -> Specification.unrestricted()
+    );
+  }
+
+  /**
+   * Creates function for searching for rules outside of this package by userId and page parameters. Returns a paginated result of items, each item containing a rule's categoryId and vendor fields.
+   * @param ruleDatastore {@link Datastore} for managing rules storage
+   * @return rules search function
+   */
+  @Bean
+  BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> externalSearchRules(
+    Datastore<Integer, WriteRuleView, RuleView, PageParameters> ruleDatastore) {
+    return (parameters, userId) -> ruleDatastore.list(parameters, userId).map(
+      ruleView -> Pair.of(ruleView.categoryId(), ruleView.vendor())
     );
   }
 

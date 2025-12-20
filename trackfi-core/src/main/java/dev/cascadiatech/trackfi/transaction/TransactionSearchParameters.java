@@ -4,13 +4,13 @@ import dev.cascadiatech.trackfi.core.PageParameters;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Setter;
 
 /**
  * Extension of {@link PageParameters} for paging and filtering transactions
  */
-@SuperBuilder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 class TransactionSearchParameters extends PageParameters {

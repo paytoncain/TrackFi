@@ -1,6 +1,7 @@
 package dev.cascadiatech.trackfi.core;
 
 import java.util.List;
+import java.util.function.Function;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -42,5 +43,21 @@ public class PageView<T> {
    */
   @NonNull
   private final List<T> items;
+
+  /**
+   * Transforms {@link PageView} internal data type
+   * @param transform function for translating page's internal data type to the specified output data type
+   * @return new {@link PageView} with desired data type
+   * @param <O> output data type
+   */
+  public <O> PageView<O> map(Function<T, O> transform) {
+    return PageView.<O>builder()
+      .page(this.page)
+      .itemsPerPage(this.itemsPerPage)
+      .totalItems(this.totalItems)
+      .totalPages(this.totalPages)
+      .items(this.items.stream().map(transform).toList())
+      .build();
+  }
 
 }
