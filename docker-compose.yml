@@ -1,16 +1,30 @@
 services:
+  database:
+    image: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 1s
+      timeout: 4s
+      retries: 5
   api:
     image: trackfi-api:0.1.0-SNAPSHOT
+    depends_on:
+      database:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       THC_PATH: /actuator/health
       THC_PORT: 8080
-      SPRING_DATASOURCE_URL: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
     healthcheck:
       test: [ "CMD", "/workspace/health-check" ]
-      interval: 1s
-      timeout: 4s
+      interval: 3s
+      timeout: 5s
       retries: 5

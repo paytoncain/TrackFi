@@ -108,6 +108,20 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>postgresql</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>dev.cascadiatech</groupId>
+          <artifactId>trackfi-jpa</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
 </project>
