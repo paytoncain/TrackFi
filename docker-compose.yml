@@ -7,11 +7,10 @@ services:
       THC_PATH: /actuator/health
       THC_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      SPRING_DATASOURCE_DRIVERCLASSNAME: org.h2.Driver
       SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD: ''
     healthcheck:
       test: [ "CMD", "/workspace/health-check" ]
-      interval: 3s
-      timeout: 5s
+      interval: 1s
+      timeout: 4s
       retries: 5

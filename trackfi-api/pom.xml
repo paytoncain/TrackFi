@@ -60,9 +60,17 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <configuration>
+          <metadataRepository>
+            <enabled>true</enabled>
+          </metadataRepository>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.version}</version>
         <configuration>
           <layers>
             <enabled>true</enabled>
@@ -72,19 +80,11 @@
               <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
             </env>
             <buildpacks>
-              <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+              <buildpack>urn:cnb:builder:paketo-buildpacks/java-native-image</buildpack>
               <buildpack>docker.io/paketobuildpacks/health-checker:latest</buildpack>
             </buildpacks>
           </image>
         </configuration>
-        <executions>
-          <execution>
-            <id>build-jar</id>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
