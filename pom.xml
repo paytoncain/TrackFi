@@ -18,6 +18,7 @@
     <module>trackfi-core</module>
     <module>trackfi-jpa</module>
     <module>trackfi-api</module>
+    <module>trackfi-ui</module>
   </modules>
 
   <properties>
