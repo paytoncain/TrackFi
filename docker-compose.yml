@@ -28,3 +28,11 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
+
+  ui:
+    image: trackfi-ui:latest
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8081:80"
