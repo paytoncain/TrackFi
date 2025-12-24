@@ -19,7 +19,7 @@
     - `embedded`: adds embedded h2 database compatible with `spring-data-jpa` (enabled by default)
 
 ### Running TrackFi locally
-A docker compose file has been added to the project's root directory to run TrackFi locally. Note that `mvn -Ppostgres -Pnative spring-boot:build-image` must be run within the `trackfi-api` directory before attempting to create the stack. This command must be run again for any changes to appear in the resulting docker image.
+A docker compose file has been added to the project's root directory to run TrackFi locally. Note that `mvn clean install -Ppostgres -DskipTests` must be run within the project root directory before attempting to create the stack. This command must be run again for any changes to appear in the resulting docker image.
 
 Commands (from project root):
 - Create stack (attached logs): `docker compose up`

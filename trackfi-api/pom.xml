@@ -58,39 +58,76 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <layers>
+              <enabled>true</enabled>
+            </layers>
+            <image>
+              <env>
+                <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
+              </env>
+              <buildpacks>
+                <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+                <buildpack>docker.io/paketobuildpacks/health-checker:latest</buildpack>
+              </buildpacks>
+            </image>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
-      <plugin>
-        <groupId>org.graalvm.buildtools</groupId>
-        <artifactId>native-maven-plugin</artifactId>
-        <configuration>
-          <metadataRepository>
-            <enabled>true</enabled>
-          </metadataRepository>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <layers>
-            <enabled>true</enabled>
-          </layers>
-          <image>
-            <env>
-              <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
-            </env>
-            <buildpacks>
-              <buildpack>urn:cnb:builder:paketo-buildpacks/java-native-image</buildpack>
-              <buildpack>docker.io/paketobuildpacks/health-checker:latest</buildpack>
-            </buildpacks>
-          </image>
-        </configuration>
+        <executions>
+          <execution>
+            <id>build-docker-image</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build-image-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
 
 
   <profiles>
+    <profile>
+      <id>native</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <configuration>
+              <metadataRepository>
+                <enabled>true</enabled>
+              </metadataRepository>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <image>
+                <buildpacks>
+                  <buildpack>urn:cnb:builder:paketo-buildpacks/java-native-image</buildpack>
+                  <buildpack>docker.io/paketobuildpacks/health-checker:latest</buildpack>
+                </buildpacks>
+              </image>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>embedded</id>
       <activation>

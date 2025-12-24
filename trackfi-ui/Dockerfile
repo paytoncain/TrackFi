@@ -1,14 +1,7 @@
-FROM node:23-alpine AS build
-
-WORKDIR /app
-
-COPY . .
-
-RUN npm install && npm run build
-
 FROM nginx:stable-alpine
 
-COPY --from=build /app/target/dist /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+COPY target/dist .
 
 RUN apk update && apk add curl
 HEALTHCHECK --interval=5s --timeout=4s --retries=3 \
