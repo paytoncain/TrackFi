@@ -67,6 +67,7 @@
             <layers>
               <enabled>true</enabled>
             </layers>
+            <imageName>ghcr.io/paytoncain/trackfi-api:${project.version}</imageName>
             <image>
               <env>
                 <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
@@ -92,6 +93,27 @@
             <goals>
               <goal>build-image-no-fork</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.6.2</version>
+        <executions>
+          <execution>
+            <id>push-image</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <arguments>
+                <argument>push</argument>
+                <argument>ghcr.io/paytoncain/trackfi-api:${project.version}</argument>
+              </arguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>

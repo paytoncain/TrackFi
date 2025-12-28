@@ -107,8 +107,22 @@
               <arguments>
                 <argument>build</argument>
                 <argument>-t</argument>
-                <argument>trackfi-ui:${project.version}</argument>
+                <argument>ghcr.io/paytoncain/trackfi-ui:${project.version}</argument>
                 <argument>.</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>push-image</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>docker</executable>
+              <arguments>
+                <argument>push</argument>
+                <argument>ghcr.io/paytoncain/trackfi-ui:${project.version}</argument>
               </arguments>
             </configuration>
           </execution>
