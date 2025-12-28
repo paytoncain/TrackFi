@@ -1,0 +1,15 @@
+package com.github.paytoncain.trackfi.transaction;
+
+import java.time.LocalDate;
+
+/**
+ * View for reading existing transactions
+ * @param id transaction id
+ * @param categoryId transaction category id (nullable)
+ * @param vendor transaction vendor name
+ * @param amount transaction amount
+ * @param date transaction date
+ */
+record TransactionView(Integer id, Integer categoryId, String vendor, Float amount, LocalDate date) {
+
+}

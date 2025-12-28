@@ -10,7 +10,7 @@
     <version>3.5.8</version>
   </parent>
 
-  <groupId>dev.cascadiatech</groupId>
+  <groupId>com.github.paytoncain</groupId>
   <artifactId>trackfi</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
