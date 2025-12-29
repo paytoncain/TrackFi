@@ -21,20 +21,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * REST endpoints for managing objects
- * @param <ID> object id type
  * @param <W> write object type
  * @param <T> object type
  * @param <P> page parameters type (can include search parameters)
  */
-public abstract class CRDController<ID, W, T, P extends PageParameters> {
+public abstract class CRDController<W, T, P extends PageParameters> {
 
-  private final Datastore<ID, W, T, P> datastore;
+  private final Datastore<W, T, P> datastore;
 
   /**
    * Creates a {@link CRDController}
    * @param datastore {@link Datastore} for managing objects
    */
-  protected CRDController(Datastore<ID, W, T, P> datastore) {
+  protected CRDController(Datastore<W, T, P> datastore) {
     this.datastore = datastore;
   }
 
@@ -69,7 +68,7 @@ public abstract class CRDController<ID, W, T, P extends PageParameters> {
    * @throws NotFoundException if object cannot be found
    */
   @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public T get(@PathVariable("id") ID id, Authentication authentication) throws NotFoundException {
+  public T get(@PathVariable("id") String id, Authentication authentication) throws NotFoundException {
     return datastore.get(id, getUserId(authentication));
   }
 
@@ -81,7 +80,7 @@ public abstract class CRDController<ID, W, T, P extends PageParameters> {
    */
   @DeleteMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void delete(@PathVariable("id") ID id, Authentication authentication) throws NotFoundException {
+  public void delete(@PathVariable("id") String id, Authentication authentication) throws NotFoundException {
     datastore.delete(id, getUserId(authentication));
   }
 

@@ -26,10 +26,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest
 @ComponentScan("com.github.paytoncain.trackfi.config")
-public abstract class CRDControllerTest<ID, W, T, P extends PageParameters> {
+public abstract class CRDControllerTest<W, T, P extends PageParameters> {
 
   @MockitoBean
-  private Datastore<ID, W, T, P> datastore;
+  private Datastore<W, T, P> datastore;
 
   @Autowired
   private MockMvc mockMvc;

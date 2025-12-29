@@ -8,10 +8,11 @@ import java.time.LocalDate;
 /**
  * View for writing transactions
  * @param categoryId transaction category id (nullable)
+ * @param <CID> category id Java type
  * @param vendor transaction vendor name
  * @param amount transaction amount
  * @param date transaction date
  */
-record WriteTransactionView(Integer categoryId, @NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
+record WriteTransactionView<CID>(CID categoryId, @NotBlank String vendor, @NotNull Float amount, @NotNull @Past LocalDate date) {
 
 }

@@ -25,10 +25,10 @@ class RuleConfig {
    * @return {@link Datastore} for managing rules within application components
    */
   @Bean
-  Datastore<Integer, WriteRuleView, RuleView, PageParameters> ruleDatastore(RuleRepository repository) {
+  Datastore<WriteRuleView<Integer>, RuleView<Integer, Integer>, PageParameters> ruleDatastore(RuleRepository repository) {
     return DatastoreFactory.create(
       repository,
-      ruleEntity -> new RuleView(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendor()),
+      ruleEntity -> new RuleView<>(ruleEntity.getId(), ruleEntity.getCategoryId(), ruleEntity.getVendor()),
       (writeRule, userId) -> new RuleEntity(null, userId, false, writeRule.categoryId(), writeRule.vendor()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {
@@ -38,7 +38,8 @@ class RuleConfig {
         }
         return new UnknownDataIntegrityException();
       },
-      (p) -> Specification.unrestricted()
+      (p) -> Specification.unrestricted(),
+      Integer::parseInt
     );
   }
 
@@ -49,7 +50,7 @@ class RuleConfig {
    */
   @Bean
   BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> externalSearchRules(
-    Datastore<Integer, WriteRuleView, RuleView, PageParameters> ruleDatastore) {
+    Datastore<WriteRuleView<Integer>, RuleView<Integer, Integer>, PageParameters> ruleDatastore) {
     return (parameters, userId) -> ruleDatastore.list(parameters, userId).map(
       ruleView -> Pair.of(ruleView.categoryId(), ruleView.vendor())
     );

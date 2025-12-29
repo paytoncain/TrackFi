@@ -11,7 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link RuleController}
  */
 @WebMvcTest(RuleController.class)
-class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleView, PageParameters> {
+class RuleControllerTest extends CRDControllerTest<WriteRuleView<Integer>, RuleView<Integer, Integer>, PageParameters> {
 
   @Override
   protected String endpoint() {
@@ -19,13 +19,13 @@ class RuleControllerTest extends CRDControllerTest<Integer, WriteRuleView, RuleV
   }
 
   @Override
-  protected WriteRuleView createWriteView() {
-    return new WriteRuleView(1, "vendor");
+  protected WriteRuleView<Integer> createWriteView() {
+    return new WriteRuleView<>(1, "vendor");
   }
 
   @Override
-  protected RuleView createOutputView() {
-    return new RuleView(1, 2, "vendor");
+  protected RuleView<Integer, Integer> createOutputView() {
+    return new RuleView<>(1, 2, "vendor");
   }
 
   @Test

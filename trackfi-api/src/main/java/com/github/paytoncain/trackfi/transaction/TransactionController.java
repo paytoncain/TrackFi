@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/transactions")
-class TransactionController extends CRDController<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> {
+class TransactionController extends CRDController<WriteTransactionView<Integer>, TransactionView<Integer, Integer>, TransactionSearchParameters> {
 
   private final Consumer<String> ruleApplicationService;
 
@@ -25,7 +25,7 @@ class TransactionController extends CRDController<Integer, WriteTransactionView,
      * @param ruleApplicationService {@link RuleApplicationService} for applying categoryIds to transactions via rules
      */
   protected TransactionController(
-    Datastore<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> datastore,
+    Datastore<WriteTransactionView<Integer>, TransactionView<Integer, Integer>, TransactionSearchParameters> datastore,
     Consumer<String> ruleApplicationService
   ) {
     super(datastore);

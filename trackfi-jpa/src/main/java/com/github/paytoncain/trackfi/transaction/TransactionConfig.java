@@ -26,10 +26,10 @@ class TransactionConfig {
    * @return {@link Datastore} for managing transactions within application components
    */
   @Bean
-  Datastore<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> transactionDatastore(TransactionRepository transactionRepository) {
+  Datastore<WriteTransactionView<Integer>, TransactionView<Integer, Integer>, TransactionSearchParameters> transactionDatastore(TransactionRepository transactionRepository) {
     return DatastoreFactory.create(
       transactionRepository,
-      transactionEntity -> new TransactionView(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
+      transactionEntity -> new TransactionView<>(transactionEntity.getId(), transactionEntity.getCategoryId(), transactionEntity.getVendor(), transactionEntity.getAmount(), transactionEntity.getDate()),
       (object, userId) -> new TransactionEntity(null, userId, false, object.categoryId(), object.vendor(), object.amount(), object.date()),
       violation -> {
         if (violation.getCause() instanceof ConstraintViolationException constraintViolationException) {
@@ -49,7 +49,8 @@ class TransactionConfig {
         }
 
         return specification.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("vendor"), vendor));
-      }
+      },
+      Integer::parseInt
     );
   }
 
@@ -62,16 +63,16 @@ class TransactionConfig {
    */
   @Bean
   Consumer<String> ruleApplicationService(
-    Datastore<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> transactionDatastore,
+    Datastore<WriteTransactionView<Integer>, TransactionView<Integer, Integer>, TransactionSearchParameters> transactionDatastore,
     BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> externalSearchRules,
     TransactionRepository transactionRepository
   ) {
-    return new RuleApplicationService(
+    return new RuleApplicationService<>(
       externalSearchRules,
       transactionDatastore::list,
       (transactionWithUserId) -> {
         String userId = transactionWithUserId.getLeft();
-        TransactionView view = transactionWithUserId.getRight();
+        TransactionView<Integer, Integer> view = transactionWithUserId.getRight();
         transactionRepository.save(new TransactionEntity(view.id(), userId, false, view.categoryId(), view.vendor(), view.amount(), view.date()));
       }
     );

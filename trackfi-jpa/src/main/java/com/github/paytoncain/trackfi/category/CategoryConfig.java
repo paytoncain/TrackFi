@@ -20,13 +20,14 @@ class CategoryConfig {
    * @return {@link Datastore} for managing categories within application components
    */
   @Bean
-  Datastore<Integer, WriteCategoryView, CategoryView, PageParameters> categoryDatastore(CategoryRepository categoryRepository) {
+  Datastore<WriteCategoryView, CategoryView<Integer>, PageParameters> categoryDatastore(CategoryRepository categoryRepository) {
     return DatastoreFactory.create(
       categoryRepository,
-      categoryEntity -> new CategoryView(categoryEntity.getId(), categoryEntity.getName()),
+      categoryEntity -> new CategoryView<>(categoryEntity.getId(), categoryEntity.getName()),
       (writeCategory, userId) -> new CategoryEntity(null, userId, false, writeCategory.name()),
       violation -> new UnknownDataIntegrityException(),
-      (p) -> Specification.unrestricted()
+      (p) -> Specification.unrestricted(),
+      Integer::parseInt
     );
   }
 

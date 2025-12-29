@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  */
 @WebMvcTest(TransactionController.class)
 final
-class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransactionView, TransactionView, TransactionSearchParameters> {
+class TransactionControllerTest extends CRDControllerTest<WriteTransactionView<Integer>, TransactionView<Integer, Integer>, TransactionSearchParameters> {
 
   @Autowired
   private MockMvc mockMvc;
@@ -37,13 +37,13 @@ class TransactionControllerTest extends CRDControllerTest<Integer, WriteTransact
   }
 
   @Override
-  protected WriteTransactionView createWriteView() {
-    return new WriteTransactionView(2, "vendor", 10f, LocalDate.parse("2020-10-10"));
+  protected WriteTransactionView<Integer> createWriteView() {
+    return new WriteTransactionView<>(2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Override
-  protected TransactionView createOutputView() {
-    return new TransactionView(1, 2, "vendor", 10f, LocalDate.parse("2020-10-10"));
+  protected TransactionView<Integer, Integer> createOutputView() {
+    return new TransactionView<>(1, 2, "vendor", 10f, LocalDate.parse("2020-10-10"));
   }
 
   @Test

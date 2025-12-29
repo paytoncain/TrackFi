@@ -15,23 +15,26 @@ public final class DatastoreFactory {
 
   /**
    * Creates instance of {@link Datastore} for managing objects
-   * @param repository {@link BaseRepository} for managing object with JPA
-   * @param entityTransform function for creating a view from an entity
-   * @param viewTransform function for creating an entity from a write view
+   *
+   * @param <ID>              entity id type
+   * @param <W>               write view type
+   * @param <T>               view type
+   * @param <E>               entity type
+   * @param <P>               page parameters type, default can be used if search functionality is not being provided
+   * @param repository        {@link BaseRepository} for managing object with JPA
+   * @param entityTransform   function for creating a view from an entity
+   * @param viewTransform     function for creating an entity from a write view
    * @param getSpecifications function for creating an array JPA {@link Specification} from parameters
+   * @param idTranslator      function for translating id string to required database type
    * @return instance of {@link Datastore} for managing objects within application components
-   * @param <ID> entity id type
-   * @param <W> write view type
-   * @param <T> view type
-   * @param <E> entity type
-   * @param <P> page parameters type, default can be used if search functionality is not being provided
    */
-  public static <ID, W, T, E extends BaseEntity<ID>, P extends PageParameters> Datastore<ID, W, T, P> create(
+  public static <ID, W, T, E extends BaseEntity<ID>, P extends PageParameters> Datastore<W, T, P> create(
     BaseRepository<ID, E> repository,
     Function<E, T> entityTransform,
     BiFunction<W, String, E> viewTransform,
     Function<DataIntegrityViolationException, DataIntegrityException> exceptionHandler,
-    Function<P, Specification<E>> getSpecifications
+    Function<P, Specification<E>> getSpecifications,
+    Function<String, ID> idTranslator
   ) {
     return new Datastore<>() {
       /**
@@ -62,7 +65,7 @@ public final class DatastoreFactory {
        * @throws NotFoundException if object could not be found
        */
       @Override
-      public T get(ID id, String userId) throws NotFoundException {
+      public T get(String id, String userId) throws NotFoundException {
         E entity = getEntity(id, userId);
         return entityTransform.apply(entity);
       }
@@ -103,7 +106,7 @@ public final class DatastoreFactory {
        * @throws NotFoundException if object cannot be found
        */
       @Override
-      public void delete(ID id, String userId) throws NotFoundException {
+      public void delete(String id, String userId) throws NotFoundException {
         E entity = getEntity(id, userId);
         entity.setDeleted(true); // entities are not deleted, but hidden from user view with 'deleted' flag
         repository.save(entity);
@@ -116,8 +119,8 @@ public final class DatastoreFactory {
        * @return object matching id with delete flag = false
        * @throws NotFoundException if object could not be found
        */
-      private E getEntity(ID id, String userId) throws NotFoundException {
-        Optional<E> maybeEntity = repository.getByIdAndUserIdAndDeleted(id, userId, false); // only return entity if not deleted
+      private E getEntity(String id, String userId) throws NotFoundException {
+        Optional<E> maybeEntity = repository.getByIdAndUserIdAndDeleted(idTranslator.apply(id), userId, false); // only return entity if not deleted
         if (maybeEntity.isEmpty()) {
           throw new NotFoundException("object with id=%s not found".formatted(id));
         }

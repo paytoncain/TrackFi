@@ -8,12 +8,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service for applying category ids to transactions via rules
+ * @param <ID> id Java type
+ * @param <CID> category id Java type
  */
-class RuleApplicationService implements Consumer<String> {
+class RuleApplicationService<ID, CID> implements Consumer<String> {
 
-  private final BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> searchRules;
-  private final BiFunction<TransactionSearchParameters, String, PageView<TransactionView>> searchTransactions;
-  private final Consumer<Pair<String, TransactionView>> saveTransaction;
+  private final BiFunction<PageParameters, String, PageView<Pair<CID, String>>> searchRules;
+  private final BiFunction<TransactionSearchParameters, String, PageView<TransactionView<ID, CID>>> searchTransactions;
+  private final Consumer<Pair<String, TransactionView<ID, CID>>> saveTransaction;
 
   /**
    * Creates a {@link RuleApplicationService}
@@ -22,9 +24,9 @@ class RuleApplicationService implements Consumer<String> {
    * @param saveTransaction function for saving edits to a transaction's categoryId
    */
   RuleApplicationService(
-    BiFunction<PageParameters, String, PageView<Pair<Integer, String>>> searchRules,
-    BiFunction<TransactionSearchParameters, String, PageView<TransactionView>> searchTransactions,
-    Consumer<Pair<String, TransactionView>> saveTransaction
+    BiFunction<PageParameters, String, PageView<Pair<CID, String>>> searchRules,
+    BiFunction<TransactionSearchParameters, String, PageView<TransactionView<ID, CID>>> searchTransactions,
+    Consumer<Pair<String, TransactionView<ID, CID>>> saveTransaction
   ) {
     this.searchRules = searchRules;
     this.searchTransactions = searchTransactions;
@@ -40,14 +42,14 @@ class RuleApplicationService implements Consumer<String> {
     PageParameters ruleParameters = new PageParameters(1, 200);
 
     processPages(userId, ruleParameters, searchRules, (rule) -> {
-      Integer categoryId = rule.getLeft();
+      CID categoryId = rule.getLeft();
       String vendorPattern = rule.getRight();
 
       TransactionSearchParameters transactionParameters = new TransactionSearchParameters(1, 200, vendorPattern);
       processPages(userId, transactionParameters, searchTransactions, transactionView ->
 
         saveTransaction.accept(
-          Pair.of(userId, new TransactionView(transactionView.id(), categoryId, transactionView.vendor(), transactionView.amount(), transactionView.date()))
+          Pair.of(userId, new TransactionView<>(transactionView.id(), categoryId, transactionView.vendor(), transactionView.amount(), transactionView.date()))
         )
       );
     });

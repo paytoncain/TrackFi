@@ -6,8 +6,9 @@ import jakarta.validation.constraints.NotNull;
 /**
  * View for writing rules
  * @param categoryId rule category id
+ * @param <CID> category id Java type
  * @param vendor pattern matching transaction vendors
  */
-record WriteRuleView(@NotNull Integer categoryId, @NotBlank String vendor) {
+record WriteRuleView<CID>(@NotNull CID categoryId, @NotBlank String vendor) {
 
 }

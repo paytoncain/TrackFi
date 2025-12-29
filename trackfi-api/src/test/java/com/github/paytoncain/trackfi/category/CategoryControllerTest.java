@@ -11,7 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests security features and functionality of {@link CategoryController}
  */
 @WebMvcTest({CategoryController.class})
-class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategoryView, CategoryView, PageParameters> {
+class CategoryControllerTest extends CRDControllerTest<WriteCategoryView, CategoryView<Integer>, PageParameters> {
 
   @Override
   protected String endpoint() {
@@ -24,8 +24,8 @@ class CategoryControllerTest extends CRDControllerTest<Integer, WriteCategoryVie
   }
 
   @Override
-  protected CategoryView createOutputView() {
-    return new CategoryView(1, "name");
+  protected CategoryView<Integer> createOutputView() {
+    return new CategoryView<>(1, "name");
   }
 
   @Test

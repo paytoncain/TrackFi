@@ -5,7 +5,7 @@ package com.github.paytoncain.trackfi.core;
  * @param <W> input class
  * @param <O> output class
  */
-public interface Datastore<ID, W, O, P extends PageParameters> {
+public interface Datastore<W, O, P extends PageParameters> {
 
   /**
    * Creates a new object which does not yet exist in storage
@@ -23,7 +23,7 @@ public interface Datastore<ID, W, O, P extends PageParameters> {
    * @return object belonging to user
    * @throws NotFoundException if object could not be found
    */
-  O get(ID id, String userId) throws NotFoundException;
+  O get(String id, String userId) throws NotFoundException;
 
   /**
    * Lists objects belonging to user
@@ -39,6 +39,6 @@ public interface Datastore<ID, W, O, P extends PageParameters> {
    * @param userId unique user identifier
    * @throws NotFoundException if object could not be found
    */
-  void delete(ID id, String userId) throws NotFoundException;
+  void delete(String id, String userId) throws NotFoundException;
 
 }
