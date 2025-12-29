@@ -38,12 +38,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-deploy</id>
-            <phase>none</phase>
-          </execution>
-        </executions>
+        <configuration>
+          <skip>true</skip>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>com.github.eirslett</groupId>
