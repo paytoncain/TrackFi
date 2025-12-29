@@ -1,4 +1,4 @@
-[![CodeQL](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql)
+1[![CodeQL](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/github-code-scanning/codeql)
 [![Dependabot](https://github.com/paytoncain/TrackFi/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/dependabot/dependabot-updates)
 [![Java CI with Maven](https://github.com/paytoncain/TrackFi/actions/workflows/maven.yml/badge.svg)](https://github.com/paytoncain/TrackFi/actions/workflows/maven.yml)
 # TrackFi
@@ -19,7 +19,7 @@
     - `embedded`: adds embedded h2 database compatible with `spring-data-jpa` (enabled by default)
 
 ### Running TrackFi locally
-A docker compose file has been added to the project's root directory to run TrackFi locally. Note that `mvn clean install -Ppostgres -DskipTests` must be run within the project root directory before attempting to create the stack. This command must be run again for any changes to appear in the resulting docker image.
+A docker compose file has been added to the project's root directory to run TrackFi locally.
 
 Commands (from project root):
 - Create stack (attached logs): `docker compose up`

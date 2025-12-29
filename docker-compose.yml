@@ -11,7 +11,7 @@ services:
       timeout: 4s
       retries: 5
   api:
-    image: trackfi-api:0.1.0-SNAPSHOT
+    image: ghcr.io/paytoncain/trackfi-api:0.1.0-SNAPSHOT
     depends_on:
       database:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
       retries: 5
 
   ui:
-    image: trackfi-ui:0.1.0-SNAPSHOT
+    image: ghcr.io/paytoncain/trackfi-ui:0.1.0-SNAPSHOT
     depends_on:
       api:
         condition: service_healthy
