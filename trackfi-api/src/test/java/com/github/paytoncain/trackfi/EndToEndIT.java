@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class EndToEndTest {
+class EndToEndIT {
 
   @Autowired
   private MockMvc mockMvc;
@@ -100,7 +100,7 @@ class EndToEndTest {
   }
 
   /**
-   * Get rule belonging to authenticated user by id (should equal output from {@link EndToEndTest#createRule(String)}
+   * Get rule belonging to authenticated user by id (should equal output from {@link EndToEndIT#createRule(String)}
    */
   private void getRule(String rule) throws Exception {
     mockMvc.perform(
@@ -146,7 +146,7 @@ class EndToEndTest {
   }
 
   /**
-   * Delete category belonging to currently authenticated user (should be deleting output from {@link EndToEndTest#createCategory(String)}
+   * Delete category belonging to currently authenticated user (should be deleting output from {@link EndToEndIT#createCategory(String)}
    */
   private void deleteCategory(String category) throws Exception {
     mockMvc.perform(
@@ -158,7 +158,7 @@ class EndToEndTest {
   }
 
   /**
-   * Get category belonging to currently authenticated user and assert output (should be the same as output from {@link EndToEndTest#createCategory(String)}
+   * Get category belonging to currently authenticated user and assert output (should be the same as output from {@link EndToEndIT#createCategory(String)}
    */
   private void getCategory(String category) throws Exception {
     mockMvc.perform(
@@ -250,7 +250,7 @@ class EndToEndTest {
   }
 
   /**
-   * get transaction belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndTest#createTransaction(String)})
+   * get transaction belonging to authenticated user (should contain the same resulting transaction as {@link EndToEndIT#createTransaction(String)})
    */
   private String getTransaction(String expectedTransaction) throws Exception {
     return mockMvc.perform(
